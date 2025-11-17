@@ -16,10 +16,11 @@ export async function createGroup(name: string) {
 		.json<{ id: number }>();
 }
 
-export async function updateGroup(id: number, name: string) {
+export async function updateGroup(id: number, name: string, autoFetchFullContent?: boolean | null) {
 	return await api.patch('groups/' + id, {
 		json: {
-			name: name
+			name: name,
+			auto_fetch_full_content: autoFetchFullContent
 		}
 	});
 }

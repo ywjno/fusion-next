@@ -19,7 +19,9 @@
 		item = data;
 	});
 
-	let safeContent = $derived(render(data.content, data.link));
+	// Prefer full_content over content
+	let displayContent = $derived(data.full_content || data.content);
+	let safeContent = $derived(render(displayContent, data.link));
 
 	// we prefetch a list of items as the queue for the item switcher.
 	// this is a bit hacky, but it's easier to maintain and it should work for most of use cases.

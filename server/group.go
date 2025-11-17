@@ -35,8 +35,9 @@ func (g Group) All(ctx context.Context) (*RespGroupAll, error) {
 	groups := make([]*GroupForm, 0, len(data))
 	for _, v := range data {
 		groups = append(groups, &GroupForm{
-			ID:   v.ID,
-			Name: v.Name,
+			ID:                   v.ID,
+			Name:                 v.Name,
+			AutoFetchFullContent: v.AutoFetchFullContent,
 		})
 	}
 	return &RespGroupAll{
@@ -60,7 +61,8 @@ func (g Group) Create(ctx context.Context, req *ReqGroupCreate) (*RespGroupCreat
 
 func (g Group) Update(ctx context.Context, req *ReqGroupUpdate) error {
 	err := g.repo.Update(req.ID, &model.Group{
-		Name: req.Name,
+		Name:                 req.Name,
+		AutoFetchFullContent: req.AutoFetchFullContent,
 	})
 	if errors.Is(err, repo.ErrDuplicatedKey) {
 		err = NewBizError(err, http.StatusBadRequest, "name is not allowed to be the same as other groups")

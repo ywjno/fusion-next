@@ -28,7 +28,8 @@ type Feed struct {
 	// retrieve this feed.
 	ConsecutiveFailures uint `gorm:"consecutive_failures;default:0"`
 
-	Suspended *bool `gorm:"suspended;default:false"`
+	Suspended            *bool `gorm:"suspended;default:false"`
+	AutoFetchFullContent *bool `gorm:"auto_fetch_full_content"`
 
 	FeedRequestOptions
 

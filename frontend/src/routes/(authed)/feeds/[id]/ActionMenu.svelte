@@ -17,6 +17,7 @@
 		name: feed.name,
 		link: feed.link,
 		suspended: feed.suspended,
+		auto_fetch_full_content: feed.auto_fetch_full_content,
 		req_proxy: feed.req_proxy,
 		group_id: feed.group.id
 	});
@@ -25,6 +26,7 @@
 			name: feed.name,
 			link: feed.link,
 			suspended: feed.suspended,
+			auto_fetch_full_content: feed.auto_fetch_full_content,
 			req_proxy: feed.req_proxy,
 			group_id: feed.group.id
 		};
@@ -126,6 +128,15 @@
 					{#each groups as group}
 						<option value={group.id}>{group.name}</option>
 					{/each}
+				</select>
+			</fieldset>
+
+			<fieldset class="fieldset">
+				<legend class="fieldset-legend">Auto-fetch Full Content</legend>
+				<select class="select" bind:value={settingsForm.auto_fetch_full_content}>
+					<option value={null}>Inherit from Group</option>
+					<option value={true}>Enabled</option>
+					<option value={false}>Disabled</option>
 				</select>
 			</fieldset>
 

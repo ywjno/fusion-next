@@ -1,8 +1,9 @@
 package server
 
 type GroupForm struct {
-	ID   uint    `json:"id"`
-	Name *string `json:"name"`
+	ID                   uint    `json:"id"`
+	Name                 *string `json:"name"`
+	AutoFetchFullContent *bool   `json:"auto_fetch_full_content"`
 }
 
 type RespGroupAll struct {
@@ -18,8 +19,9 @@ type RespGroupCreate struct {
 }
 
 type ReqGroupUpdate struct {
-	ID   uint    `param:"id" validate:"required"`
-	Name *string `json:"name" validate:"required"`
+	ID                   uint    `param:"id" validate:"required"`
+	Name                 *string `json:"name" validate:"required"`
+	AutoFetchFullContent *bool   `json:"auto_fetch_full_content"`
 }
 
 type ReqGroupDelete struct {

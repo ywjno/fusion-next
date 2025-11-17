@@ -40,14 +40,15 @@ func main() {
 	}
 	repo.Init(config.DB)
 
-	go pull.NewPuller(repo.NewFeed(repo.DB), repo.NewItem(repo.DB)).Run()
+	go pull.NewPuller(repo.NewFeed(repo.DB), repo.NewItem(repo.DB), config.AutoFetchFullContent).Run()
 
 	api.Run(api.Params{
-		Host:            config.Host,
-		Port:            config.Port,
-		PasswordHash:    config.PasswordHash,
-		UseSecureCookie: config.SecureCookie,
-		TLSCert:         config.TLSCert,
-		TLSKey:          config.TLSKey,
+		Host:                 config.Host,
+		Port:                 config.Port,
+		PasswordHash:         config.PasswordHash,
+		UseSecureCookie:      config.SecureCookie,
+		TLSCert:              config.TLSCert,
+		TLSKey:               config.TLSKey,
+		AutoFetchFullContent: config.AutoFetchFullContent,
 	})
 }

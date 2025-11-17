@@ -4,10 +4,12 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"sync"
 	"time"
 
 	"github.com/0x2e/fusion/model"
 	"github.com/0x2e/fusion/pkg/ptr"
+	"github.com/0x2e/fusion/service/fetcher"
 	"github.com/0x2e/fusion/service/pull/client"
 )
 
@@ -44,9 +46,10 @@ func NewSingleFeedPuller(readFeed ReadFeedItemsFn, repo SingleFeedRepo) SingleFe
 
 // defaultSingleFeedRepo is the default implementation of SingleFeedRepo
 type defaultSingleFeedRepo struct {
-	feedID   uint
-	feedRepo FeedRepo
-	itemRepo ItemRepo
+	feedID          uint
+	feedRepo        FeedRepo
+	itemRepo        ItemRepo
+	systemAutoFetch bool
 }
 
 func (r *defaultSingleFeedRepo) InsertItems(items []*model.Item) error {
@@ -54,7 +57,97 @@ func (r *defaultSingleFeedRepo) InsertItems(items []*model.Item) error {
 	for _, item := range items {
 		item.FeedID = r.feedID
 	}
-	return r.itemRepo.Insert(items)
+
+	err := r.itemRepo.Insert(items)
+	if err != nil {
+		return err
+	}
+
+	// Auto-fetch full content if enabled
+	go r.autoFetchFullContent(items)
+
+	return nil
+}
+
+func (r *defaultSingleFeedRepo) autoFetchFullContent(items []*model.Item) {
+	feed, err := r.feedRepo.Get(r.feedID)
+	if err != nil {
+		slog.Error("Failed to get feed for auto-fetch", "feed_id", r.feedID, "error", err)
+		return
+	}
+
+	if !fetcher.ShouldAutoFetch(feed, r.systemAutoFetch) {
+		return
+	}
+
+	if len(items) == 0 {
+		return
+	}
+
+	slog.Info("Auto-fetching full content", "feed_id", r.feedID, "items_count", len(items))
+
+	// Limit concurrency to avoid overwhelming the server
+	const maxConcurrency = 3
+	routinePool := make(chan struct{}, maxConcurrency)
+	defer close(routinePool)
+
+	// Collect results for batch update
+	var updatesMutex sync.Mutex
+	updates := make(map[uint]string)
+
+	wg := sync.WaitGroup{}
+	for _, item := range items {
+		// Skip items without link or ID (ID=0 means item already exists and wasn't inserted)
+		if item.ID == 0 || item.Link == nil || *item.Link == "" {
+			continue
+		}
+
+		routinePool <- struct{}{}
+		wg.Add(1)
+
+		go func(item *model.Item) {
+			defer func() {
+				wg.Done()
+				<-routinePool
+			}()
+
+			result := fetcher.FetchFullContent(fetcher.FetchOptions{
+				URL: *item.Link,
+			})
+
+			if result.Error != nil {
+				slog.Warn("Failed to auto-fetch full content",
+					"item_id", item.ID,
+					"link", *item.Link,
+					"error", result.Error)
+				return
+			}
+
+			if result.Content != "" {
+				updatesMutex.Lock()
+				updates[item.ID] = result.Content
+				updatesMutex.Unlock()
+
+				slog.Debug("Successfully auto-fetched full content",
+					"item_id", item.ID,
+					"title", item.Title)
+			}
+		}(item)
+	}
+
+	wg.Wait()
+
+	// Batch update all items at once in a single transaction
+	if len(updates) > 0 {
+		slog.Info("Batch updating full content", "feed_id", r.feedID, "count", len(updates))
+		if err := r.itemRepo.BatchUpdateFullContent(updates); err != nil {
+			slog.Error("Failed to batch update full content", "feed_id", r.feedID, "error", err)
+		} else {
+			slog.Info("Completed auto-fetching full content", "feed_id", r.feedID, "success_count", len(updates))
+		}
+	} else {
+		slog.Info("No full content to update", "feed_id", r.feedID)
+	}
 }
 
 func (r *defaultSingleFeedRepo) RecordSuccess(lastBuild *time.Time) error {

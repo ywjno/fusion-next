@@ -59,6 +59,7 @@ export type FeedUpdateForm = {
 	name?: string;
 	link?: string;
 	suspended?: boolean;
+	auto_fetch_full_content?: boolean | null;
 	req_proxy?: string;
 	group_id?: number;
 };

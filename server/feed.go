@@ -23,12 +23,14 @@ type FeedRepo interface {
 }
 
 type Feed struct {
-	repo FeedRepo
+	repo            FeedRepo
+	systemAutoFetch bool
 }
 
-func NewFeed(repo FeedRepo) *Feed {
+func NewFeed(repo FeedRepo, systemAutoFetch bool) *Feed {
 	return &Feed{
-		repo: repo,
+		repo:            repo,
+		systemAutoFetch: systemAutoFetch,
 	}
 }
 
@@ -45,15 +47,16 @@ func (f Feed) List(ctx context.Context, req *ReqFeedList) (*RespFeedList, error)
 	feeds := make([]*FeedForm, 0, len(data))
 	for _, v := range data {
 		feeds = append(feeds, &FeedForm{
-			ID:          v.ID,
-			Name:        v.Name,
-			Link:        v.Link,
-			Failure:     v.Failure,
-			Suspended:   v.Suspended,
-			ReqProxy:    v.ReqProxy,
-			UpdatedAt:   v.UpdatedAt,
-			UnreadCount: v.UnreadCount,
-			Group:       GroupForm{ID: v.GroupID, Name: v.Group.Name},
+			ID:                   v.ID,
+			Name:                 v.Name,
+			Link:                 v.Link,
+			Failure:              v.Failure,
+			Suspended:            v.Suspended,
+			AutoFetchFullContent: v.AutoFetchFullContent,
+			ReqProxy:             v.ReqProxy,
+			UpdatedAt:            v.UpdatedAt,
+			UnreadCount:          v.UnreadCount,
+			Group:                GroupForm{ID: v.GroupID, Name: v.Group.Name, AutoFetchFullContent: v.Group.AutoFetchFullContent},
 		})
 	}
 	return &RespFeedList{
@@ -68,14 +71,15 @@ func (f Feed) Get(ctx context.Context, req *ReqFeedGet) (*RespFeedGet, error) {
 	}
 
 	return &RespFeedGet{
-		ID:        data.ID,
-		Name:      data.Name,
-		Link:      data.Link,
-		Failure:   data.Failure,
-		Suspended: data.Suspended,
-		ReqProxy:  data.ReqProxy,
-		UpdatedAt: data.UpdatedAt,
-		Group:     GroupForm{ID: data.GroupID, Name: data.Group.Name},
+		ID:                   data.ID,
+		Name:                 data.Name,
+		Link:                 data.Link,
+		Failure:              data.Failure,
+		Suspended:            data.Suspended,
+		AutoFetchFullContent: data.AutoFetchFullContent,
+		ReqProxy:             data.ReqProxy,
+		UpdatedAt:            data.UpdatedAt,
+		Group:                GroupForm{ID: data.GroupID, Name: data.Group.Name, AutoFetchFullContent: data.Group.AutoFetchFullContent},
 	}, nil
 }
 
@@ -106,7 +110,7 @@ func (f Feed) Create(ctx context.Context, req *ReqFeedCreate) (*RespFeedCreate, 
 		IDs: ids,
 	}
 
-	puller := pull.NewPuller(repo.NewFeed(repo.DB), repo.NewItem(repo.DB))
+	puller := pull.NewPuller(repo.NewFeed(repo.DB), repo.NewItem(repo.DB), f.systemAutoFetch)
 	if len(feeds) > 1 {
 		go func() {
 			routinePool := make(chan struct{}, 10)
@@ -166,9 +170,10 @@ func (f Feed) CheckValidity(ctx context.Context, req *ReqFeedCheckValidity) (*Re
 
 func (f Feed) Update(ctx context.Context, req *ReqFeedUpdate) error {
 	data := &model.Feed{
-		Name:      req.Name,
-		Link:      req.Link,
-		Suspended: req.Suspended,
+		Name:                 req.Name,
+		Link:                 req.Link,
+		Suspended:            req.Suspended,
+		AutoFetchFullContent: req.AutoFetchFullContent,
 		FeedRequestOptions: model.FeedRequestOptions{
 			ReqProxy: req.ReqProxy,
 		},
@@ -188,7 +193,7 @@ func (f Feed) Delete(ctx context.Context, req *ReqFeedDelete) error {
 }
 
 func (f Feed) Refresh(ctx context.Context, req *ReqFeedRefresh) error {
-	pull := pull.NewPuller(repo.NewFeed(repo.DB), repo.NewItem(repo.DB))
+	pull := pull.NewPuller(repo.NewFeed(repo.DB), repo.NewItem(repo.DB), f.systemAutoFetch)
 	if req.ID != nil {
 		return pull.PullOne(ctx, *req.ID)
 	}

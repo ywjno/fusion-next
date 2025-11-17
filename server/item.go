@@ -2,9 +2,11 @@ package server
 
 import (
 	"context"
+	"log/slog"
 
 	"github.com/0x2e/fusion/model"
 	"github.com/0x2e/fusion/repo"
+	"github.com/0x2e/fusion/service/fetcher"
 )
 
 type ItemRepo interface {
@@ -13,6 +15,7 @@ type ItemRepo interface {
 	Delete(id uint) error
 	UpdateUnread(ids []uint, unread *bool) error
 	UpdateBookmark(id uint, bookmark *bool) error
+	UpdateFullContent(id uint, fullContent *string) error
 }
 
 type Item struct {
@@ -47,14 +50,15 @@ func (i Item) List(ctx context.Context, req *ReqItemList) (*RespItemList, error)
 	items := make([]*ItemForm, 0, len(data))
 	for _, v := range data {
 		items = append(items, &ItemForm{
-			ID:        v.ID,
-			GUID:      v.GUID,
-			Title:     v.Title,
-			Link:      v.Link,
-			Unread:    v.Unread,
-			Bookmark:  v.Bookmark,
-			PubDate:   v.PubDate,
-			UpdatedAt: &v.UpdatedAt,
+			ID:          v.ID,
+			GUID:        v.GUID,
+			Title:       v.Title,
+			Link:        v.Link,
+			FullContent: v.FullContent,
+			Unread:      v.Unread,
+			Bookmark:    v.Bookmark,
+			PubDate:     v.PubDate,
+			UpdatedAt:   &v.UpdatedAt,
 			Feed: ItemFeed{
 				ID:   v.Feed.ID,
 				Name: v.Feed.Name,
@@ -74,16 +78,40 @@ func (i Item) Get(ctx context.Context, req *ReqItemGet) (*RespItemGet, error) {
 		return nil, err
 	}
 
+	// Default fetch to true if not specified
+	shouldFetch := req.Fetch == nil || *req.Fetch
+
+	// Fetch full content if requested and not already available
+	if shouldFetch && data.Link != nil && (data.FullContent == nil || *data.FullContent == "") {
+		slog.Info("Fetching full content for item", "id", req.ID, "link", *data.Link)
+		result := fetcher.FetchFullContent(fetcher.FetchOptions{
+			URL: *data.Link,
+		})
+
+		if result.Error == nil && result.Content != "" {
+			data.FullContent = &result.Content
+			// Save to database asynchronously
+			go func() {
+				if err := i.repo.UpdateFullContent(data.ID, data.FullContent); err != nil {
+					slog.Error("Failed to save full content", "id", data.ID, "error", err)
+				}
+			}()
+		} else if result.Error != nil {
+			slog.Warn("Failed to fetch full content, will use RSS content", "id", req.ID, "error", result.Error)
+		}
+	}
+
 	return &RespItemGet{
-		ID:        data.ID,
-		GUID:      data.GUID,
-		Title:     data.Title,
-		Link:      data.Link,
-		Content:   data.Content,
-		Unread:    data.Unread,
-		Bookmark:  data.Bookmark,
-		PubDate:   data.PubDate,
-		UpdatedAt: &data.UpdatedAt,
+		ID:          data.ID,
+		GUID:        data.GUID,
+		Title:       data.Title,
+		Link:        data.Link,
+		Content:     data.Content,
+		FullContent: data.FullContent,
+		Unread:      data.Unread,
+		Bookmark:    data.Bookmark,
+		PubDate:     data.PubDate,
+		UpdatedAt:   &data.UpdatedAt,
 		Feed: ItemFeed{
 			ID:   data.Feed.ID,
 			Name: data.Feed.Name,

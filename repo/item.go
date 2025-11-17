@@ -1,6 +1,7 @@
 package repo
 
 import (
+	"strings"
 	"time"
 
 	"github.com/0x2e/fusion/model"
@@ -89,4 +90,59 @@ func (i Item) UpdateUnread(ids []uint, unread *bool) error {
 
 func (i Item) UpdateBookmark(id uint, bookmark *bool) error {
 	return i.db.Model(&model.Item{}).Where("id = ?", id).Update("bookmark", bookmark).Error
+}
+
+func (i Item) UpdateFullContent(id uint, fullContent *string) error {
+	return i.db.Model(&model.Item{}).Where("id = ?", id).Update("full_content", fullContent).Error
+}
+
+func (i Item) BatchUpdateFullContent(updates map[uint]string) error {
+	if len(updates) == 0 {
+		return nil
+	}
+
+	// For small batches, use individual updates in a transaction
+	if len(updates) <= 5 {
+		return i.db.Transaction(func(tx *gorm.DB) error {
+			for id, content := range updates {
+				if err := tx.Model(&model.Item{}).Where("id = ?", id).Update("full_content", content).Error; err != nil {
+					return err
+				}
+			}
+			return nil
+		})
+	}
+
+	// For larger batches, use CASE WHEN for better performance
+	return i.db.Transaction(func(tx *gorm.DB) error {
+		// Build CASE WHEN statement
+		var caseClauses []string
+		var args []interface{}
+		var ids []uint
+
+		for id, content := range updates {
+			caseClauses = append(caseClauses, "WHEN ? THEN ?")
+			args = append(args, id, content)
+			ids = append(ids, id)
+		}
+
+		// Build placeholders for IN clause
+		placeholders := make([]string, len(ids))
+		for idx := range ids {
+			placeholders[idx] = "?"
+		}
+
+		// Build the final SQL
+		sql := "UPDATE items SET full_content = CASE id " +
+			strings.Join(caseClauses, " ") +
+			" END, updated_at = ? WHERE id IN (" +
+			strings.Join(placeholders, ",") + ")"
+
+		args = append(args, time.Now())
+		for _, id := range ids {
+			args = append(args, id)
+		}
+
+		return tx.Exec(sql, args...).Error
+	})
 }

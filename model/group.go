@@ -12,5 +12,6 @@ type Group struct {
 	UpdatedAt time.Time
 	DeletedAt soft_delete.DeletedAt `gorm:"uniqueIndex:idx_name"`
 
-	Name *string `gorm:"name;not null;uniqueIndex:idx_name"`
+	Name                 *string `gorm:"name;not null;uniqueIndex:idx_name"`
+	AutoFetchFullContent *bool   `gorm:"auto_fetch_full_content"`
 }

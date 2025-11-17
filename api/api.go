@@ -25,12 +25,13 @@ import (
 )
 
 type Params struct {
-	Host            string
-	Port            int
-	PasswordHash    *auth.HashedPassword
-	UseSecureCookie bool
-	TLSCert         string
-	TLSKey          string
+	Host                 string
+	Port                 int
+	PasswordHash         *auth.HashedPassword
+	UseSecureCookie      bool
+	TLSCert              string
+	TLSKey               string
+	AutoFetchFullContent bool
 }
 
 func Run(params Params) {
@@ -111,7 +112,7 @@ func Run(params Params) {
 	}
 
 	feeds := authed.Group("/feeds")
-	feedAPIHandler := newFeedAPI(server.NewFeed(repo.NewFeed(repo.DB)))
+	feedAPIHandler := newFeedAPI(server.NewFeed(repo.NewFeed(repo.DB), params.AutoFetchFullContent))
 	feeds.GET("", feedAPIHandler.List)
 	feeds.GET("/:id", feedAPIHandler.Get)
 	feeds.POST("", feedAPIHandler.Create)

@@ -9,16 +9,17 @@ type ItemFeed struct {
 }
 
 type ItemForm struct {
-	ID        uint       `json:"id"`
-	Title     *string    `json:"title"`
-	Link      *string    `json:"link"`
-	GUID      *string    `json:"guid"`
-	Content   *string    `json:"content"`
-	Unread    *bool      `json:"unread"`
-	Bookmark  *bool      `json:"bookmark"`
-	PubDate   *time.Time `json:"pub_date"`
-	UpdatedAt *time.Time `json:"updated_at"`
-	Feed      ItemFeed   `json:"feed"`
+	ID          uint       `json:"id"`
+	Title       *string    `json:"title"`
+	Link        *string    `json:"link"`
+	GUID        *string    `json:"guid"`
+	Content     *string    `json:"content"`
+	FullContent *string    `json:"full_content"`
+	Unread      *bool      `json:"unread"`
+	Bookmark    *bool      `json:"bookmark"`
+	PubDate     *time.Time `json:"pub_date"`
+	UpdatedAt   *time.Time `json:"updated_at"`
+	Feed        ItemFeed   `json:"feed"`
 }
 
 type ReqItemList struct {
@@ -36,7 +37,8 @@ type RespItemList struct {
 }
 
 type ReqItemGet struct {
-	ID uint `param:"id" validate:"required"`
+	ID    uint  `param:"id" validate:"required"`
+	Fetch *bool `query:"fetch"`
 }
 
 type RespItemGet ItemForm

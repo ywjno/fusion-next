@@ -24,19 +24,23 @@ type FeedRepo interface {
 
 type ItemRepo interface {
 	Insert(items []*model.Item) error
+	UpdateFullContent(id uint, fullContent *string) error
+	BatchUpdateFullContent(updates map[uint]string) error
 }
 
 type Puller struct {
-	feedRepo FeedRepo
-	itemRepo ItemRepo
+	feedRepo         FeedRepo
+	itemRepo         ItemRepo
+	systemAutoFetch  bool
 }
 
 // TODO: cache favicon
 
-func NewPuller(feedRepo FeedRepo, itemRepo ItemRepo) *Puller {
+func NewPuller(feedRepo FeedRepo, itemRepo ItemRepo, systemAutoFetch bool) *Puller {
 	return &Puller{
-		feedRepo: feedRepo,
-		itemRepo: itemRepo,
+		feedRepo:        feedRepo,
+		itemRepo:        itemRepo,
+		systemAutoFetch: systemAutoFetch,
 	}
 }
 

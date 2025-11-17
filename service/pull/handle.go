@@ -34,9 +34,10 @@ func (p *Puller) do(ctx context.Context, f *model.Feed, force bool) error {
 	}
 
 	repo := defaultSingleFeedRepo{
-		feedID:   f.ID,
-		feedRepo: p.feedRepo,
-		itemRepo: p.itemRepo,
+		feedID:          f.ID,
+		feedRepo:        p.feedRepo,
+		itemRepo:        p.itemRepo,
+		systemAutoFetch: p.systemAutoFetch,
 	}
 	return NewSingleFeedPuller(client.NewFeedClient().FetchItems, &repo).Pull(ctx, f)
 }

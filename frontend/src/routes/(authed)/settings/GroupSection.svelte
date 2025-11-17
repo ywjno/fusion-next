@@ -23,7 +23,7 @@
 		const group = existingGroups.find((v) => v.id === id);
 		if (!group) return;
 		try {
-			await updateGroup(id, group.name);
+			await updateGroup(id, group.name, group.auto_fetch_full_content);
 			toast.success(t('state.success'));
 		} catch (e) {
 			toast.error((e as Error).message);
@@ -50,8 +50,18 @@
 <Section id="groups" title={t('common.groups')} description={t('settings.groups.description')}>
 	<div class="flex flex-col space-y-4">
 		{#each existingGroups as g}
-			<div class="flex flex-col items-center space-x-2 md:flex-row">
-				<input type="text" class="input w-full md:w-56" bind:value={g.name} />
+			<div class="flex flex-col items-start space-y-2 md:flex-row md:items-center md:space-x-2 md:space-y-0">
+				<div class="flex flex-col space-y-2 w-full md:w-auto">
+					<input type="text" class="input w-full md:w-56" bind:value={g.name} />
+					<select
+						class="select select-sm w-full md:w-56"
+						bind:value={g.auto_fetch_full_content}
+					>
+						<option value={null}>Auto-fetch: Inherit</option>
+						<option value={true}>Auto-fetch: Enabled</option>
+						<option value={false}>Auto-fetch: Disabled</option>
+					</select>
+				</div>
 				<div class="flex gap-2">
 					<button onclick={() => handleUpdate(g.id)} class="btn btn-ghost">
 						{t('common.save')}

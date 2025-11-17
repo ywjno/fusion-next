@@ -3,15 +3,16 @@ package server
 import "time"
 
 type FeedForm struct {
-	ID          uint      `json:"id"`
-	Name        *string   `json:"name"`
-	Link        *string   `json:"link"`
-	Failure     *string   `json:"failure"`
-	Suspended   *bool     `json:"suspended"`
-	ReqProxy    *string   `json:"req_proxy"`
-	UpdatedAt   time.Time `json:"updated_at"`
-	UnreadCount int       `json:"unread_count"`
-	Group       GroupForm `json:"group"`
+	ID                   uint      `json:"id"`
+	Name                 *string   `json:"name"`
+	Link                 *string   `json:"link"`
+	Failure              *string   `json:"failure"`
+	Suspended            *bool     `json:"suspended"`
+	AutoFetchFullContent *bool     `json:"auto_fetch_full_content"`
+	ReqProxy             *string   `json:"req_proxy"`
+	UpdatedAt            time.Time `json:"updated_at"`
+	UnreadCount          int       `json:"unread_count"`
+	Group                GroupForm `json:"group"`
 }
 
 type ReqFeedList struct {
@@ -61,12 +62,13 @@ type RespFeedCreate struct {
 }
 
 type ReqFeedUpdate struct {
-	ID        uint    `param:"id" validate:"required"`
-	Name      *string `json:"name"`
-	Link      *string `json:"link"`
-	Suspended *bool   `json:"suspended"`
-	ReqProxy  *string `json:"req_proxy"`
-	GroupID   *uint   `json:"group_id"`
+	ID                   uint    `param:"id" validate:"required"`
+	Name                 *string `json:"name"`
+	Link                 *string `json:"link"`
+	Suspended            *bool   `json:"suspended"`
+	AutoFetchFullContent *bool   `json:"auto_fetch_full_content"`
+	ReqProxy             *string `json:"req_proxy"`
+	GroupID              *uint   `json:"group_id"`
 }
 
 type ReqFeedDelete struct {
