@@ -26,6 +26,7 @@ type Conf struct {
 	TLSCert              string
 	TLSKey               string
 	AutoFetchFullContent bool
+	LogLevel             string
 }
 
 func Load() (Conf, error) {
@@ -46,6 +47,7 @@ func Load() (Conf, error) {
 		TLSCert              string `env:"TLS_CERT"`
 		TLSKey               string `env:"TLS_KEY"`
 		AutoFetchFullContent bool   `env:"AUTO_FETCH_FULL_CONTENT" envDefault:"false"`
+		LogLevel             string `env:"LOG_LEVEL" envDefault:"info"`
 	}
 	if err := env.Parse(&conf); err != nil {
 		return Conf{}, err
@@ -77,5 +79,6 @@ func Load() (Conf, error) {
 		TLSCert:              conf.TLSCert,
 		TLSKey:               conf.TLSKey,
 		AutoFetchFullContent: conf.AutoFetchFullContent,
+		LogLevel:             conf.LogLevel,
 	}, nil
 }

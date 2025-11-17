@@ -4,6 +4,7 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 	"os"
+	"strings"
 
 	"log/slog"
 
@@ -14,11 +15,16 @@ import (
 )
 
 func main() {
-	l := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
-		Level: slog.LevelInfo,
-	}))
-	slog.SetDefault(l)
+	config, err := conf.Load()
+	if err != nil {
+		slog.Error("failed to load configuration", "error", err)
+		return
+	}
 
+	// Parse log level from config
+	logLevel := parseLogLevel(config.LogLevel)
+
+	// Setup logger based on debug mode and log level
 	if conf.Debug {
 		l := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
 			Level: slog.LevelDebug,
@@ -31,13 +37,14 @@ func main() {
 				return
 			}
 		}()
+	} else {
+		l := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+			Level: logLevel,
+		}))
+		slog.SetDefault(l)
 	}
 
-	config, err := conf.Load()
-	if err != nil {
-		slog.Error("failed to load configuration", "error", err)
-		return
-	}
+	slog.Info("Starting Fusion", "log_level", logLevel.String())
 	repo.Init(config.DB)
 
 	go pull.NewPuller(repo.NewFeed(repo.DB), repo.NewItem(repo.DB), config.AutoFetchFullContent).Run()
@@ -51,4 +58,20 @@ func main() {
 		TLSKey:               config.TLSKey,
 		AutoFetchFullContent: config.AutoFetchFullContent,
 	})
+}
+
+func parseLogLevel(level string) slog.Level {
+	switch strings.ToLower(level) {
+	case "debug":
+		return slog.LevelDebug
+	case "info":
+		return slog.LevelInfo
+	case "warn", "warning":
+		return slog.LevelWarn
+	case "error":
+		return slog.LevelError
+	default:
+		slog.Warn("Invalid log level, using INFO", "level", level)
+		return slog.LevelInfo
+	}
 }
