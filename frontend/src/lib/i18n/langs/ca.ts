@@ -93,6 +93,12 @@ const lang = {
 		'Estàs segur que vols eliminar aquest grup? Tots els seus canals es mouran al grup predeterminat',
 	'settings.groups.delete.error.delete_the_default': 'No es pot eliminar el grup predeterminat',
 
+	'settings.auto_fetch.label': 'Obtenir automàticament el contingut complet',
+	'settings.auto_fetch.inherit': 'Heretar',
+	'settings.auto_fetch.inherit_from_group': 'Heretar del grup',
+	'settings.auto_fetch.enabled': 'Habilitat',
+	'settings.auto_fetch.disabled': 'Deshabilitat',
+
 	// auth
 	'auth.logout.confirm': 'Estàs segur que vols tancar la sessió?',
 	'auth.logout.failed_message': 'Error en tancar sessió. Si us plau, torna-ho a intentar.',

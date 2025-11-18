@@ -93,6 +93,12 @@ const lang = {
 		'Är du säker på att du vill ta bort denna grupp? Alla dess flöden kommer att flyttas till standardgruppen',
 	'settings.groups.delete.error.delete_the_default': 'Kan inte ta bort standardgruppen',
 
+	'settings.auto_fetch.label': 'Hämta automatiskt fullständigt innehåll',
+	'settings.auto_fetch.inherit': 'Ärv',
+	'settings.auto_fetch.inherit_from_group': 'Ärv från grupp',
+	'settings.auto_fetch.enabled': 'Aktiverad',
+	'settings.auto_fetch.disabled': 'Inaktiverad',
+
 	// auth
 	'auth.logout.confirm': 'Är du säker på att du vill logga ut?',
 	'auth.logout.failed_message': 'Misslyckades med att logga ut. Försök igen.',

@@ -132,11 +132,11 @@
 			</fieldset>
 
 			<fieldset class="fieldset">
-				<legend class="fieldset-legend">Auto-fetch Full Content</legend>
+				<legend class="fieldset-legend">{t('settings.auto_fetch.label')}</legend>
 				<select class="select" bind:value={settingsForm.auto_fetch_full_content}>
-					<option value={null}>Inherit from Group</option>
-					<option value={true}>Enabled</option>
-					<option value={false}>Disabled</option>
+					<option value={null}>{t('settings.auto_fetch.inherit_from_group')}</option>
+					<option value={true}>{t('settings.auto_fetch.enabled')}</option>
+					<option value={false}>{t('settings.auto_fetch.disabled')}</option>
 				</select>
 			</fieldset>
 

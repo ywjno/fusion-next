@@ -93,6 +93,12 @@ const lang = {
 		'Êtes-vous sûr de vouloir supprimer ce groupe? Tous ses flux seront déplacés vers le groupe par défaut',
 	'settings.groups.delete.error.delete_the_default': 'Impossible de supprimer le groupe par défaut',
 
+	'settings.auto_fetch.label': 'Récupération automatique du contenu complet',
+	'settings.auto_fetch.inherit': 'Hériter',
+	'settings.auto_fetch.inherit_from_group': 'Hériter du groupe',
+	'settings.auto_fetch.enabled': 'Activé',
+	'settings.auto_fetch.disabled': 'Désactivé',
+
 	// auth
 	'auth.logout.confirm': 'Êtes-vous sûr de vouloir vous déconnecter?',
 	'auth.logout.failed_message': 'Échec de la déconnexion. Veuillez réessayer.',

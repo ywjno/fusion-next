@@ -94,6 +94,12 @@ const lang = {
 		'Tem certeza que deseja excluir este grupo? Todos os seus feeds serão movidos para o grupo padrão',
 	'settings.groups.delete.error.delete_the_default': 'Não é possível excluir o grupo padrão',
 
+	'settings.auto_fetch.label': 'Buscar automaticamente conteúdo completo',
+	'settings.auto_fetch.inherit': 'Herdar',
+	'settings.auto_fetch.inherit_from_group': 'Herdar do grupo',
+	'settings.auto_fetch.enabled': 'Habilitado',
+	'settings.auto_fetch.disabled': 'Desabilitado',
+
 	// auth
 	'auth.logout.confirm': 'Tem certeza que deseja sair?',
 	'auth.logout.failed_message': 'Falha ao sair. Por favor, tente novamente.',

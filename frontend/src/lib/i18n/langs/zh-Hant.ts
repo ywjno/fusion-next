@@ -89,6 +89,12 @@ const lang = {
 	'settings.groups.delete.confirm': '您確定要刪除此群組嗎？所有訂閱源將被移動到預設群組',
 	'settings.groups.delete.error.delete_the_default': '無法刪除預設群組',
 
+	'settings.auto_fetch.label': '自動抓取全文',
+	'settings.auto_fetch.inherit': '繼承',
+	'settings.auto_fetch.inherit_from_group': '從群組繼承',
+	'settings.auto_fetch.enabled': '啟用',
+	'settings.auto_fetch.disabled': '停用',
+
 	// auth
 	'auth.logout.confirm': '您確定要登出嗎？',
 	'auth.logout.failed_message': '登出失敗。請再試一次。',

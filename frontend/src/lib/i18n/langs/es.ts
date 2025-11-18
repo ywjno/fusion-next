@@ -94,6 +94,12 @@ const lang = {
 		'¿Estás seguro de que quieres eliminar este grupo? Todos sus feeds se moverán al grupo predeterminado',
 	'settings.groups.delete.error.delete_the_default': 'No se puede eliminar el grupo predeterminado',
 
+	'settings.auto_fetch.label': 'Obtención automática de contenido completo',
+	'settings.auto_fetch.inherit': 'Heredar',
+	'settings.auto_fetch.inherit_from_group': 'Heredar del grupo',
+	'settings.auto_fetch.enabled': 'Habilitado',
+	'settings.auto_fetch.disabled': 'Deshabilitado',
+
 	// auth
 	'auth.logout.confirm': '¿Estás seguro de que quieres cerrar sesión?',
 	'auth.logout.failed_message': 'Error al cerrar sesión. Por favor, inténtalo de nuevo.',

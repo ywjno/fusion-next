@@ -93,6 +93,12 @@ const lang = {
 		'Вы уверены, что хотите удалить эту группу? Все ее ленты будут перемещены в группу по умолчанию',
 	'settings.groups.delete.error.delete_the_default': 'Невозможно удалить группу по умолчанию',
 
+	'settings.auto_fetch.label': 'Автоматическая загрузка полного содержимого',
+	'settings.auto_fetch.inherit': 'Наследовать',
+	'settings.auto_fetch.inherit_from_group': 'Наследовать от группы',
+	'settings.auto_fetch.enabled': 'Включено',
+	'settings.auto_fetch.disabled': 'Отключено',
+
 	// auth
 	'auth.logout.confirm': 'Вы уверены, что хотите выйти?',
 	'auth.logout.failed_message': 'Не удалось выйти. Пожалуйста, попробуйте еще раз.',

@@ -90,6 +90,12 @@ const lang = {
 	'settings.groups.delete.confirm': '确定要删除此分组吗？其中的所有订阅源将被移至默认分组',
 	'settings.groups.delete.error.delete_the_default': '无法删除默认分组',
 
+	'settings.auto_fetch.label': '自动抓取全文',
+	'settings.auto_fetch.inherit': '继承',
+	'settings.auto_fetch.inherit_from_group': '从分组继承',
+	'settings.auto_fetch.enabled': '启用',
+	'settings.auto_fetch.disabled': '禁用',
+
 	// auth
 	'auth.logout.confirm': '确定要退出登录吗？',
 	'auth.logout.failed_message': '退出登录失败。请重试。',

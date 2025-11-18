@@ -94,6 +94,12 @@ const lang = {
 		'Czy na pewno chcesz usunąć tę grupę? Wszystkie kanały, które zawiera, zostaną przeniesione do grupy domyślnej.',
 	'settings.groups.delete.error.delete_the_default': 'Nie można usunąć domyślnej grupy',
 
+	'settings.auto_fetch.label': 'Automatyczne pobieranie pełnej treści',
+	'settings.auto_fetch.inherit': 'Dziedzicz',
+	'settings.auto_fetch.inherit_from_group': 'Dziedzicz z grupy',
+	'settings.auto_fetch.enabled': 'Włączone',
+	'settings.auto_fetch.disabled': 'Wyłączone',
+
 	// auth
 	'auth.logout.confirm': 'Czy na pewno chcesz się wylogować?',
 	'auth.logout.failed_message': 'Logowanie nie powiodło się. Spróbój ponownie.',

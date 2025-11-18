@@ -94,6 +94,12 @@ const lang = {
 	'settings.groups.delete.error.delete_the_default':
 		'Die Standardgruppe kann nicht gelöscht werden',
 
+	'settings.auto_fetch.label': 'Vollständigen Inhalt automatisch abrufen',
+	'settings.auto_fetch.inherit': 'Erben',
+	'settings.auto_fetch.inherit_from_group': 'Von Gruppe erben',
+	'settings.auto_fetch.enabled': 'Aktiviert',
+	'settings.auto_fetch.disabled': 'Deaktiviert',
+
 	// auth
 	'auth.logout.confirm': 'Sind Sie sicher, dass Sie sich abmelden möchten?',
 	'auth.logout.failed_message': 'Abmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.',

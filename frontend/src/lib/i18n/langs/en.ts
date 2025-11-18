@@ -93,6 +93,12 @@ const lang = {
 		'Are you sure you want to delete this group? All its feeds will be moved to the default group',
 	'settings.groups.delete.error.delete_the_default': 'Cannot delete default group',
 
+	'settings.auto_fetch.label': 'Auto-fetch Full Content',
+	'settings.auto_fetch.inherit': 'Inherit',
+	'settings.auto_fetch.inherit_from_group': 'Inherit from Group',
+	'settings.auto_fetch.enabled': 'Enabled',
+	'settings.auto_fetch.disabled': 'Disabled',
+
 	// auth
 	'auth.logout.confirm': 'Are you sure you want to log out?',
 	'auth.logout.failed_message': 'Log out failed. Please try again.',

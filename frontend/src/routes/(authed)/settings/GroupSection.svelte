@@ -57,9 +57,9 @@
 						class="select select-sm w-full md:w-56"
 						bind:value={g.auto_fetch_full_content}
 					>
-						<option value={null}>Auto-fetch: Inherit</option>
-						<option value={true}>Auto-fetch: Enabled</option>
-						<option value={false}>Auto-fetch: Disabled</option>
+						<option value={null}>{t('settings.auto_fetch.label')}: {t('settings.auto_fetch.inherit')}</option>
+						<option value={true}>{t('settings.auto_fetch.label')}: {t('settings.auto_fetch.enabled')}</option>
+						<option value={false}>{t('settings.auto_fetch.label')}: {t('settings.auto_fetch.disabled')}</option>
 					</select>
 				</div>
 				<div class="flex gap-2">
