@@ -62,6 +62,7 @@ services:
 <summary>Pre-built binary</summary>
 
 Download from [Releases](https://github.com/0x2E/fusion/releases).
+
 </details>
 
 <details>
@@ -80,7 +81,8 @@ Maintained by community:
 <details>
   <summary>Build from source</summary>
 
-  Check out the "Contributing" section.
+Check out the "Contributing" section.
+
 </details>
 
 ## Configuration
@@ -96,8 +98,11 @@ Fusion can be configured in many ways:
 
 Contributions are welcome! Before contributing, please read the [Contributing Guidelines](./CONTRIBUTING.md).
 
-- Prepare environment: Go 1.24+, Node.js 24+ (and pnpm).
-- Check out the commands in `scripts.sh`.
+**Prerequisites:**
+
+- Go 1.24+
+- Bun 1.0+ (for frontend)
+- Check out the commands in `scripts.sh`
 
 For example:
 

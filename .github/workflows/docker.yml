@@ -3,9 +3,7 @@ name: docker
 on:
   release:
     types: [published]
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   docker:
@@ -25,24 +23,20 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            rook1e404/fusion
             ghcr.io/${{ env.REPOSITORY }}
           tags: |
-            # on release: tag with version (e.g., v1.2.3)
-            type=semver,pattern={{version}},enable=${{ github.event_name == 'release' }}
-            # on push to main: tag with main
-            type=raw,value=main,enable=${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+            # Tag with version when publishing release (e.g., v1.2.3 -> 1.2.3, 1.2, 1)
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            # Also tag as 'latest'
+            type=raw,value=latest
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
         with:
           platforms: amd64,arm64
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -56,3 +50,5 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          annotations: ${{ steps.meta.outputs.annotations }}

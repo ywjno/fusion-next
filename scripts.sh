@@ -30,8 +30,8 @@ build_frontend() {
   echo "Using fusion version string: ${version}"
 
   cd ./frontend
-  pnpm i
-  VITE_FUSION_VERSION="$version" pnpm run build
+  bun i
+  VITE_FUSION_VERSION="$version" bun run build
   cd $root
 }
 
