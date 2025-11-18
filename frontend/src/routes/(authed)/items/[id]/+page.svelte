@@ -2,7 +2,7 @@
 	import type { Item } from '$lib/api/model';
 	import ItemActionBookmark from '$lib/components/ItemActionBookmark.svelte';
 	import ItemActionGotoFeed from '$lib/components/ItemActionGotoFeed.svelte';
-	import ItemActionUnread from '$lib/components/ItemActionUnread.svelte';
+	import ItemActionUnread, { toggleUnread } from '$lib/components/ItemActionUnread.svelte';
 	import ItemActionVisitLink from '$lib/components/ItemActionVisitLink.svelte';
 	import ItemActionShareLink from '$lib/components/ItemActionShareLink.svelte';
 	import PageNavHeader from '$lib/components/PageNavHeader.svelte';
@@ -17,6 +17,13 @@
 	let item = $state<Item>(data);
 	$effect(() => {
 		item = data;
+	});
+
+	// Auto-mark as read when opening the item
+	$effect(() => {
+		if (item.unread) {
+			toggleUnread(item);
+		}
 	});
 
 	// Prefer full_content over content
