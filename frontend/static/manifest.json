@@ -2,16 +2,22 @@
 	"short_name": "Fusion",
 	"icons": [
 		{
+			"src": "/icon-96.png",
+			"type": "image/png",
+			"sizes": "96x96",
+			"purpose": "any"
+		},
+		{
 			"src": "/icon-192.png",
 			"type": "image/png",
 			"sizes": "192x192",
-			"purpose": "maskable"
+			"purpose": "any maskable"
 		},
 		{
 			"src": "/icon-512.png",
 			"type": "image/png",
 			"sizes": "512x512",
-			"purpose": "maskable"
+			"purpose": "any maskable"
 		}
 	],
 	"id": "/?source=pwa",
