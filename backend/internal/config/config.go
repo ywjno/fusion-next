@@ -14,9 +14,10 @@ type Config struct {
 	Port          int
 	FeverUsername string // Username used to derive Fever API key.
 
-	CORSAllowedOrigins []string // Allowed Origins for CORS. Empty means allow all.
-	TrustedProxies     []string // Trusted reverse proxies for client IP resolution. Empty disables proxy trust.
-	AllowPrivateFeeds  bool     // Allow pulling private/localhost feed URLs.
+	CORSAllowedOrigins   []string // Allowed Origins for CORS. Empty means allow all.
+	TrustedProxies       []string // Trusted reverse proxies for client IP resolution. Empty disables proxy trust.
+	AllowPrivateFeeds    bool     // Allow pulling private/localhost feed URLs.
+	AutoFetchFullContent bool     // Auto-fetch full content from article links.
 
 	PullInterval    int // Pull interval in seconds (default: 1800 = 30 min)
 	PullTimeout     int // Request timeout in seconds (default: 30)
@@ -118,6 +119,11 @@ func Load() (*Config, error) {
 		return nil, err
 	}
 
+	autoFetchFullContent, err := getEnvBool("FUSION_AUTO_FETCH_FULL_CONTENT", false)
+	if err != nil {
+		return nil, err
+	}
+
 	logLevel := os.Getenv("FUSION_LOG_LEVEL")
 	if logLevel == "" {
 		logLevel = "INFO"
@@ -129,22 +135,23 @@ func Load() (*Config, error) {
 	}
 
 	return &Config{
-		DBPath:             dbPath,
-		Password:           password,
-		Port:               parsedPort,
-		FeverUsername:      getEnvString("FUSION_FEVER_USERNAME", "fusion"),
-		CORSAllowedOrigins: corsAllowedOrigins,
-		TrustedProxies:     trustedProxies,
-		AllowPrivateFeeds:  allowPrivateFeeds,
-		PullInterval:       pullInterval,
-		PullTimeout:        pullTimeout,
-		PullConcurrency:    pullConcurrency,
-		PullMaxBackoff:     pullMaxBackoff,
-		LoginRateLimit:     loginRateLimit,
-		LoginWindow:        loginWindow,
-		LoginBlock:         loginBlock,
-		LogLevel:           logLevel,
-		LogFormat:          logFormat,
+		DBPath:               dbPath,
+		Password:             password,
+		Port:                 parsedPort,
+		FeverUsername:        getEnvString("FUSION_FEVER_USERNAME", "fusion"),
+		CORSAllowedOrigins:   corsAllowedOrigins,
+		TrustedProxies:       trustedProxies,
+		AllowPrivateFeeds:    allowPrivateFeeds,
+		AutoFetchFullContent: autoFetchFullContent,
+		PullInterval:         pullInterval,
+		PullTimeout:          pullTimeout,
+		PullConcurrency:      pullConcurrency,
+		PullMaxBackoff:       pullMaxBackoff,
+		LoginRateLimit:       loginRateLimit,
+		LoginWindow:          loginWindow,
+		LoginBlock:           loginBlock,
+		LogLevel:             logLevel,
+		LogFormat:            logFormat,
 
 		OIDCIssuer:       os.Getenv("FUSION_OIDC_ISSUER"),
 		OIDCClientID:     os.Getenv("FUSION_OIDC_CLIENT_ID"),

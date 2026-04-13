@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/0x2E/fusion/internal/config"
+	"github.com/0x2E/fusion/internal/fetcher"
 	"github.com/0x2E/fusion/internal/model"
 	"github.com/0x2E/fusion/internal/pullpolicy"
 	"github.com/0x2E/fusion/internal/store"
@@ -172,11 +173,23 @@ func (p *Puller) pullFeed(ctx context.Context, feed *model.Feed) {
 
 	inputs := make([]store.BatchCreateItemInput, 0, len(result.Items))
 	for _, item := range result.Items {
+		content := item.Content
+		if fetcher.ShouldAutoFetch(feed, p.config.AutoFetchFullContent) && item.Link != "" {
+			result := fetcher.FetchFullContent(fetcher.FetchOptions{
+				URL:     item.Link,
+				Timeout: p.timeout,
+			})
+			if result.Error == nil && result.Content != "" {
+				content = result.Content
+			} else if result.Error != nil {
+				p.logger.Debug("failed to fetch full content", "feed_id", feed.ID, "item_link", item.Link, "error", result.Error)
+			}
+		}
 		inputs = append(inputs, store.BatchCreateItemInput{
 			GUID:    item.GUID,
 			Title:   item.Title,
 			Link:    item.Link,
-			Content: item.Content,
+			Content: content,
 			PubDate: item.PubDate,
 		})
 	}
