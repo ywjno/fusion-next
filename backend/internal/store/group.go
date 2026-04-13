@@ -4,13 +4,14 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/0x2E/fusion/internal/model"
 )
 
 func (s *Store) ListGroups() ([]*model.Group, error) {
 	rows, err := s.db.Query(`
-		SELECT id, name, created_at, updated_at
+		SELECT id, name, auto_fetch_full_content, created_at, updated_at
 		FROM groups
 		ORDER BY id
 	`)
@@ -22,9 +23,11 @@ func (s *Store) ListGroups() ([]*model.Group, error) {
 	groups := []*model.Group{}
 	for rows.Next() {
 		g := &model.Group{}
-		if err := rows.Scan(&g.ID, &g.Name, &g.CreatedAt, &g.UpdatedAt); err != nil {
+		var autoFetchFullContent sql.NullInt64
+		if err := rows.Scan(&g.ID, &g.Name, &autoFetchFullContent, &g.CreatedAt, &g.UpdatedAt); err != nil {
 			return nil, err
 		}
+		g.AutoFetchFullContent = nullInt64ToBoolPtr(autoFetchFullContent)
 		groups = append(groups, g)
 	}
 	return groups, rows.Err()
@@ -32,17 +35,20 @@ func (s *Store) ListGroups() ([]*model.Group, error) {
 
 func (s *Store) GetGroup(id int64) (*model.Group, error) {
 	g := &model.Group{}
+	var autoFetchFullContent sql.NullInt64
 	err := s.db.QueryRow(`
-		SELECT id, name, created_at, updated_at
+		SELECT id, name, auto_fetch_full_content, created_at, updated_at
 		FROM groups
 		WHERE id = :id
-	`, sql.Named("id", id)).Scan(&g.ID, &g.Name, &g.CreatedAt, &g.UpdatedAt)
+	`, sql.Named("id", id)).Scan(
+		&g.ID, &g.Name, &autoFetchFullContent, &g.CreatedAt, &g.UpdatedAt)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, fmt.Errorf("%w: group", ErrNotFound)
 		}
 		return nil, fmt.Errorf("get group: %w", err)
 	}
+	g.AutoFetchFullContent = nullInt64ToBoolPtr(autoFetchFullContent)
 	return g, nil
 }
 
@@ -62,12 +68,31 @@ func (s *Store) CreateGroup(name string) (*model.Group, error) {
 	return s.GetGroup(id)
 }
 
-func (s *Store) UpdateGroup(id int64, name string) error {
-	result, err := s.db.Exec(`
-		UPDATE groups
-		SET name = :name, updated_at = unixepoch()
-		WHERE id = :id
-	`, sql.Named("name", name), sql.Named("id", id))
+type UpdateGroupParams struct {
+	Name                 *string
+	AutoFetchFullContent *bool
+}
+
+func (s *Store) UpdateGroup(id int64, params UpdateGroupParams) error {
+	setClauses := []string{}
+	args := []any{sql.Named("id", id)}
+
+	if params.Name != nil {
+		setClauses = append(setClauses, "name = :name")
+		args = append(args, sql.Named("name", *params.Name))
+	}
+	if params.AutoFetchFullContent != nil {
+		setClauses = append(setClauses, "auto_fetch_full_content = :auto_fetch_full_content")
+		args = append(args, sql.Named("auto_fetch_full_content", boolToInt(*params.AutoFetchFullContent)))
+	}
+
+	if len(setClauses) == 0 {
+		return nil
+	}
+
+	setClauses = append(setClauses, "updated_at = unixepoch()")
+	query := fmt.Sprintf("UPDATE groups SET %s WHERE id = :id", strings.Join(setClauses, ", "))
+	result, err := s.db.Exec(query, args...)
 	if err != nil {
 		return err
 	}

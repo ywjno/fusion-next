@@ -113,7 +113,7 @@ func TestUpdateGroup(t *testing.T) {
 
 	// Update the group
 	newName := "Updated Name"
-	if err := store.UpdateGroup(group.ID, newName); err != nil {
+	if err := store.UpdateGroup(group.ID, UpdateGroupParams{Name: &newName}); err != nil {
 		t.Fatalf("UpdateGroup() failed: %v", err)
 	}
 

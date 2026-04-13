@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/0x2E/fusion/internal/model"
@@ -181,6 +182,79 @@ func (s *Store) BatchCreateItemsIgnore(feedID int64, inputs []BatchCreateItemInp
 	}
 
 	return created, nil
+}
+
+func (s *Store) UpdateFullContent(id int64, fullContent string) error {
+	result, err := s.db.Exec(`UPDATE items SET full_content = :full_content WHERE id = :id`,
+		sql.Named("full_content", fullContent), sql.Named("id", id))
+	if err != nil {
+		return err
+	}
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rows == 0 {
+		return fmt.Errorf("%w: item", ErrNotFound)
+	}
+	return nil
+}
+
+func (s *Store) BatchUpdateFullContent(updates map[int64]string) error {
+	if len(updates) == 0 {
+		return nil
+	}
+
+	const chunkSize = 100
+	for start := 0; start < len(updates); start += chunkSize {
+		end := min(start+chunkSize, len(updates))
+
+		chunk := make(map[int64]string)
+		i := 0
+		for id, content := range updates {
+			if i >= start && i < end {
+				chunk[id] = content
+			}
+			i++
+		}
+
+		if err := s.batchUpdateFullContentChunk(chunk); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (s *Store) batchUpdateFullContentChunk(updates map[int64]string) error {
+	if len(updates) == 0 {
+		return nil
+	}
+
+	caseClauses := make([]string, 0, len(updates))
+	args := make([]any, 0, len(updates)*2+1)
+	ids := make([]int64, 0, len(updates))
+
+	for id, content := range updates {
+		caseClauses = append(caseClauses, "WHEN :id_"+strconv.FormatInt(id, 10)+" THEN :content_"+strconv.FormatInt(id, 10))
+		args = append(args,
+			sql.Named("id_"+strconv.FormatInt(id, 10), id),
+			sql.Named("content_"+strconv.FormatInt(id, 10), content),
+		)
+		ids = append(ids, id)
+	}
+
+	placeholders := make([]string, len(ids))
+	for i, id := range ids {
+		placeholders[i] = ":id_" + strconv.FormatInt(id, 10)
+	}
+
+	query := "UPDATE items SET full_content = CASE id " +
+		strings.Join(caseClauses, " ") +
+		" END WHERE id IN (" +
+		strings.Join(placeholders, ",") + ")"
+
+	_, err := s.db.Exec(query, args...)
+	return err
 }
 
 func (s *Store) UpdateItemUnread(id int64, unread bool) error {
