@@ -8,8 +8,8 @@ import {
 import { useI18n } from "@/lib/i18n";
 
 interface AutoFetchFieldProps {
-  value: string;
-  onChange: (value: string) => void;
+  value?: boolean | null;
+  onChange: (value?: boolean | null) => void;
   variant?: "default" | "compact";
   className?: string;
 }
@@ -22,9 +22,16 @@ export function AutoFetchField({
 }: AutoFetchFieldProps) {
   const { t } = useI18n();
 
+  const stringValue =
+    value === null ? "null" : value === true ? "true" : value === false ? "false" : "null";
+
+  const handleChange = (v: string) => {
+    onChange(v === "null" ? null : v === "true" ? true : v === "false" ? false : undefined);
+  };
+
   if (variant === "compact") {
     return (
-      <Select value={value} onValueChange={onChange}>
+      <Select value={stringValue} onValueChange={handleChange}>
         <SelectTrigger className={className}>
           <SelectValue
             placeholder={`${t("settings.auto_fetch.label")}: ${t("settings.auto_fetch.inherit")}`}
@@ -50,7 +57,7 @@ export function AutoFetchField({
       <label className="text-[13px] font-medium">
         {t("settings.auto_fetch.label")}
       </label>
-      <Select value={value} onValueChange={onChange}>
+      <Select value={stringValue} onValueChange={handleChange}>
         <SelectTrigger className={className ?? "h-10"}>
           <SelectValue placeholder={t("settings.auto_fetch.inherit_from_group")} />
         </SelectTrigger>
