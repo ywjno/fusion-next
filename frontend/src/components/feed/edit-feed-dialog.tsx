@@ -50,7 +50,7 @@ export function EditFeedDialog() {
   const [groupId, setGroupId] = useState<string>("");
   const [proxy, setProxy] = useState("");
   const [suspended, setSuspended] = useState(false);
-  const [autoFetchFullContent, setAutoFetchFullContent] = useState<string>("");
+  const [autoFetchValue, setAutoFetchValue] = useState<boolean | null | undefined>(undefined);
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -67,14 +67,7 @@ export function EditFeedDialog() {
       setGroupId(editingFeed.group_id.toString());
       setProxy(editingFeed.proxy ?? "");
       setSuspended(editingFeed.suspended);
-      setAutoFetchFullContent(
-        editingFeed.auto_fetch_full_content === null ||
-          editingFeed.auto_fetch_full_content === undefined
-          ? "null"
-          : editingFeed.auto_fetch_full_content
-            ? "true"
-            : "false",
-      );
+      setAutoFetchValue(undefined);
       setIsAdvancedOpen(!!editingFeed.proxy);
       setIsMobileErrorTooltipOpen(false);
     }
@@ -86,7 +79,7 @@ export function EditFeedDialog() {
     setGroupId("");
     setProxy("");
     setSuspended(false);
-    setAutoFetchFullContent("");
+    setAutoFetchValue(undefined);
     setIsAdvancedOpen(false);
     setIsDeleteOpen(false);
   };
@@ -136,14 +129,7 @@ export function EditFeedDialog() {
         request.proxy = newProxy;
       }
 
-      const newAutoFetch =
-        autoFetchFullContent === "null"
-          ? null
-          : autoFetchFullContent === "true"
-            ? true
-            : autoFetchFullContent === "false"
-              ? false
-              : undefined;
+      const newAutoFetch = autoFetchValue !== undefined ? autoFetchValue : editingFeed.auto_fetch_full_content;
       if (newAutoFetch !== editingFeed.auto_fetch_full_content) {
         request.auto_fetch_full_content = newAutoFetch;
       }
@@ -312,8 +298,8 @@ export function EditFeedDialog() {
             </div>
 
             <AutoFetchField
-              value={autoFetchFullContent}
-              onChange={setAutoFetchFullContent}
+              value={autoFetchValue !== undefined ? autoFetchValue : editingFeed?.auto_fetch_full_content}
+              onChange={setAutoFetchValue}
             />
 
             {/* Advanced Section */}

@@ -9,9 +9,8 @@ import (
 	"time"
 
 	"github.com/0x2E/fusion/internal/config"
-	"github.com/0x2E/fusion/internal/fetcher"
-	"github.com/0x2E/fusion/internal/fetcherext"
 	"github.com/0x2E/fusion/internal/model"
+	"github.com/0x2E/fusion/internal/pullext"
 	"github.com/0x2E/fusion/internal/pullpolicy"
 	"github.com/0x2E/fusion/internal/store"
 	"golang.org/x/sync/semaphore"
@@ -174,18 +173,14 @@ func (p *Puller) pullFeed(ctx context.Context, feed *model.Feed) {
 
 	inputs := make([]store.BatchCreateItemInput, 0, len(result.Items))
 	for _, item := range result.Items {
-		content := item.Content
-		if fetcher.ShouldAutoFetch(feed, p.config.AutoFetchFullContent) && item.Link != "" {
-			result := fetcherext.FetchFullContentWithRandomUA(fetcher.FetchOptions{
-				URL:     item.Link,
-				Timeout: p.timeout,
-			})
-			if result.Error == nil && result.Content != "" {
-				content = result.Content
-			} else if result.Error != nil {
-				p.logger.Debug("failed to fetch full content", "feed_id", feed.ID, "item_link", item.Link, "error", result.Error)
-			}
-		}
+		content := pullext.MaybeFetchFullContent(
+			feed,
+			item.Link,
+			item.Content,
+			p.timeout,
+			p.config.AutoFetchFullContent,
+			p.logger,
+		)
 		inputs = append(inputs, store.BatchCreateItemInput{
 			GUID:    item.GUID,
 			Title:   item.Title,

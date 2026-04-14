@@ -79,7 +79,6 @@ function FeedsPage() {
 
   const [editingGroupId, setEditingGroupId] = useState<number | null>(null);
   const [editingGroupName, setEditingGroupName] = useState("");
-  const [editingGroupAutoFetch, setEditingGroupAutoFetch] = useState<string>("");
 
   const [deletingGroup, setDeletingGroup] = useState<Group | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -162,26 +161,10 @@ function FeedsPage() {
   const startEditingGroup = (group: Group) => {
     setEditingGroupId(group.id);
     setEditingGroupName(group.name);
-    setEditingGroupAutoFetch(
-      group.auto_fetch_full_content === null ||
-        group.auto_fetch_full_content === undefined
-        ? "null"
-        : group.auto_fetch_full_content
-          ? "true"
-          : "false",
-    );
   };
 
-  const saveGroupName = async (group: Group) => {
+  const saveGroupName = async (group: Group, autoFetch?: boolean | null) => {
     const name = editingGroupName.trim();
-    const autoFetch =
-      editingGroupAutoFetch === "null"
-        ? null
-        : editingGroupAutoFetch === "true"
-          ? true
-          : editingGroupAutoFetch === "false"
-            ? false
-            : undefined;
     setEditingGroupId(null);
 
     const shouldUpdateName = name && name !== group.name;
@@ -378,15 +361,13 @@ function FeedsPage() {
                       isCollapsed={isCollapsed}
                       isEditing={isEditing}
                       editingGroupName={editingGroupName}
-                      editingGroupAutoFetch={editingGroupAutoFetch}
                       isMobile={isMobile}
                       mobileErrorTooltipFeedId={mobileErrorTooltipFeedId}
                       onToggleGroup={toggleGroup}
                       onStartEditingGroup={startEditingGroup}
                       onChangeEditingGroupName={setEditingGroupName}
-                      onChangeEditingGroupAutoFetch={setEditingGroupAutoFetch}
-                      onSaveGroupName={(targetGroup) => {
-                        void saveGroupName(targetGroup);
+                      onSaveGroupName={(targetGroup, autoFetch) => {
+                        void saveGroupName(targetGroup, autoFetch);
                       }}
                       onCancelEditingGroup={() => setEditingGroupId(null)}
                       onOpenAddFeed={() => setAddFeedOpen(true)}

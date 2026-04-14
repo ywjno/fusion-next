@@ -1,5 +1,6 @@
 import { AlertCircle, ChevronDown, ChevronRight, Folder, Pause, Pencil, Plus, Trash2 } from "lucide-react";
 import type { Dispatch, SetStateAction } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FeedFavicon } from "@/components/feed/feed-favicon";
 import { Input } from "@/components/ui/input";
 import { AutoFetchField } from "@/components/feed/auto-fetch-field";
@@ -20,14 +21,12 @@ interface FeedGroupCardProps {
   isCollapsed: boolean;
   isEditing: boolean;
   editingGroupName: string;
-  editingGroupAutoFetch: string;
   isMobile: boolean;
   mobileErrorTooltipFeedId: number | null;
   onToggleGroup: (groupId: number) => void;
   onStartEditingGroup: (group: Group) => void;
   onChangeEditingGroupName: (value: string) => void;
-  onChangeEditingGroupAutoFetch: (value: string) => void;
-  onSaveGroupName: (group: Group) => void;
+  onSaveGroupName: (group: Group, autoFetch?: boolean | null) => void;
   onCancelEditingGroup: () => void;
   onOpenAddFeed: () => void;
   onOpenDeleteGroup: (group: Group) => void;
@@ -50,13 +49,11 @@ export function FeedGroupCard({
   isCollapsed,
   isEditing,
   editingGroupName,
-  editingGroupAutoFetch,
   isMobile,
   mobileErrorTooltipFeedId,
   onToggleGroup,
   onStartEditingGroup,
   onChangeEditingGroupName,
-  onChangeEditingGroupAutoFetch,
   onSaveGroupName,
   onCancelEditingGroup,
   onOpenAddFeed,
@@ -65,6 +62,40 @@ export function FeedGroupCard({
   onChangeMobileErrorTooltipFeedId,
   t,
 }: FeedGroupCardProps) {
+  const [autoFetchValue, setAutoFetchValue] = useState<boolean | null | undefined>(undefined);
+  const editContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isEditing) {
+      setAutoFetchValue(undefined);
+    }
+  }, [isEditing, group.id]);
+
+  const isMountedRef = useRef(true);
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
+  const handleSave = (autoFetch?: boolean | null) => {
+    onSaveGroupName(group, autoFetch !== undefined ? autoFetch : autoFetchValue);
+  };
+
+  const handleInputBlur = () => {
+    window.setTimeout(() => {
+      if (!isMountedRef.current) return;
+      const active = document.activeElement;
+      const inContainer = editContainerRef.current?.contains(active as Node);
+      const inSelect = document.querySelector("[data-radix-select-viewport]")?.contains(active as Node);
+      if (inContainer || inSelect) {
+        return;
+      }
+      handleSave();
+    }, 0);
+  };
+
   return (
     <div className="overflow-hidden rounded-lg border">
       <div
@@ -74,7 +105,7 @@ export function FeedGroupCard({
         )}
       >
         {isEditing ? (
-          <div className="flex min-w-0 flex-1 items-center gap-2 text-left">
+          <div ref={editContainerRef} className="flex min-w-0 flex-1 items-center gap-2 text-left">
             {isCollapsed ? (
               <ChevronRight className="h-4 w-4 text-muted-foreground" />
             ) : (
@@ -89,9 +120,9 @@ export function FeedGroupCard({
             <Input
               value={editingGroupName}
               onChange={(e) => onChangeEditingGroupName(e.target.value)}
-              onBlur={() => onSaveGroupName(group)}
+              onBlur={handleInputBlur}
               onKeyDown={(e) => {
-                if (e.key === "Enter") onSaveGroupName(group);
+                if (e.key === "Enter") handleSave();
                 if (e.key === "Escape") onCancelEditingGroup();
               }}
               className="h-7 w-32 px-2 text-sm sm:w-40"
@@ -99,10 +130,13 @@ export function FeedGroupCard({
               autoFocus={!isMobile}
             />
             <AutoFetchField
-              value={editingGroupAutoFetch}
-              onChange={onChangeEditingGroupAutoFetch}
+              value={autoFetchValue !== undefined ? autoFetchValue : group.auto_fetch_full_content}
+              onChange={(val) => {
+                setAutoFetchValue(val);
+                handleSave(val);
+              }}
               variant="compact"
-              className="h-7 w-[140px] px-2 text-xs sm:w-44"
+              className="h-7 w-[140px] px-2 text-xs sm:w-44 bg-background"
             />
             <span
               className={cn(
