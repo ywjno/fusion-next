@@ -28,8 +28,8 @@ build_frontend() {
 
   (
     cd frontend
-    pnpm install --frozen-lockfile --prefer-offline
-    VITE_FUSION_VERSION="$version" pnpm run build
+    bun i
+    VITE_FUSION_VERSION="$version" bun run build
   )
 
   echo "syncing frontend build artifacts for backend embed"

@@ -24,7 +24,7 @@ jobs:
       - name: Set up toolchains
         uses: ./.github/actions/setup-toolchains
         with:
-          setup-node: "true"
+          setup-bun: "true"
       - name: Build release artifacts
         run: ./scripts.sh release
       - name: Create GitHub Release
