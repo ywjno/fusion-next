@@ -23,14 +23,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-      - name: Set up Node toolchain
+      - name: Set up Bun toolchain
         uses: ./.github/actions/setup-toolchains
         with:
           setup-go: "false"
-          setup-node: "true"
+          setup-bun: "true"
       - name: Install frontend dependencies
         working-directory: frontend
-        run: pnpm install --frozen-lockfile --prefer-offline
+        run: bun install --frozen-lockfile
       - name: Check i18n dictionaries
         working-directory: frontend
-        run: pnpm run check:i18n
+        run: bun run check:i18n

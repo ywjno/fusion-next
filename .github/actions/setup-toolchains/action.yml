@@ -1,5 +1,5 @@
 name: Setup toolchains
-description: Set up cached Go and optional Node toolchains
+description: Set up cached Go, Node, and Bun toolchains
 
 inputs:
   setup-go:
@@ -8,6 +8,10 @@ inputs:
     default: "true"
   setup-node:
     description: Whether to set up Node and pnpm
+    required: false
+    default: "false"
+  setup-bun:
+    description: Whether to set up Bun
     required: false
     default: "false"
   node-version:
@@ -22,6 +26,10 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Set up Bun
+      if: inputs.setup-bun == 'true'
+      uses: oven-sh/setup-bun@v1
+
     - name: Set up pnpm
       if: inputs.setup-node == 'true'
       uses: pnpm/action-setup@v4
