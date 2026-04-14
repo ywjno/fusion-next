@@ -179,6 +179,11 @@ export const enMessages = {
   "pwa.update.description": "Reload to use the latest Fusion version.",
   "pwa.update.reload": "Reload",
   "pwa.update.title": "Update available",
+  "settings.auto_fetch.label": "Auto-fetch Full Content",
+  "settings.auto_fetch.inherit": "Inherit",
+  "settings.auto_fetch.inherit_from_group": "Inherit from Group",
+  "settings.auto_fetch.enabled": "Enabled",
+  "settings.auto_fetch.disabled": "Disabled",
 } as const;
 
 export type TranslationKey = keyof typeof enMessages;

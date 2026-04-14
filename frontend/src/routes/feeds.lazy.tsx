@@ -42,7 +42,8 @@ import {
   useMoveFeedsToGroup,
   useRefreshFeeds,
 } from "@/queries/feeds";
-import { useDeleteGroup, useGroups, useUpdateGroup } from "@/queries/groups";
+import { useDeleteGroup, useGroups } from "@/queries/groups";
+import { useUpdateGroupExtended } from "@/queries/groups.ext";
 import { useUIStore } from "@/store";
 import { FeedGroupCard } from "@/components/feed/feed-group-card";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -57,7 +58,7 @@ function FeedsPage() {
   const { t } = useI18n();
   const { data: groups = [] } = useGroups();
   const { feeds, getFeedsByGroup, isLoading: isFeedsLoading } = useFeedLookup();
-  const updateGroupMutation = useUpdateGroup();
+  const updateGroupMutation = useUpdateGroupExtended();
   const deleteGroupMutation = useDeleteGroup();
   const moveFeedsMutation = useMoveFeedsToGroup();
   const refreshFeedsMutation = useRefreshFeeds();
@@ -78,6 +79,7 @@ function FeedsPage() {
 
   const [editingGroupId, setEditingGroupId] = useState<number | null>(null);
   const [editingGroupName, setEditingGroupName] = useState("");
+  const [editingGroupAutoFetch, setEditingGroupAutoFetch] = useState<string>("");
 
   const [deletingGroup, setDeletingGroup] = useState<Group | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -160,15 +162,39 @@ function FeedsPage() {
   const startEditingGroup = (group: Group) => {
     setEditingGroupId(group.id);
     setEditingGroupName(group.name);
+    setEditingGroupAutoFetch(
+      group.auto_fetch_full_content === null ||
+        group.auto_fetch_full_content === undefined
+        ? "null"
+        : group.auto_fetch_full_content
+          ? "true"
+          : "false",
+    );
   };
 
   const saveGroupName = async (group: Group) => {
     const name = editingGroupName.trim();
+    const autoFetch =
+      editingGroupAutoFetch === "null"
+        ? null
+        : editingGroupAutoFetch === "true"
+          ? true
+          : editingGroupAutoFetch === "false"
+            ? false
+            : undefined;
     setEditingGroupId(null);
-    if (!name || name === group.name) return;
+
+    const shouldUpdateName = name && name !== group.name;
+    const shouldUpdateAutoFetch = autoFetch !== undefined && autoFetch !== group.auto_fetch_full_content;
+
+    if (!shouldUpdateName && !shouldUpdateAutoFetch) return;
 
     try {
-      await updateGroupMutation.mutateAsync({ id: group.id, name });
+      await updateGroupMutation.mutateAsync({
+        id: group.id,
+        ...(shouldUpdateName && { name }),
+        ...(shouldUpdateAutoFetch && { auto_fetch_full_content: autoFetch }),
+      });
       toast.success(t("feeds.toast.renamed"));
     } catch {
       toast.error(t("feeds.toast.renameFailed"));
@@ -352,11 +378,13 @@ function FeedsPage() {
                       isCollapsed={isCollapsed}
                       isEditing={isEditing}
                       editingGroupName={editingGroupName}
+                      editingGroupAutoFetch={editingGroupAutoFetch}
                       isMobile={isMobile}
                       mobileErrorTooltipFeedId={mobileErrorTooltipFeedId}
                       onToggleGroup={toggleGroup}
                       onStartEditingGroup={startEditingGroup}
                       onChangeEditingGroupName={setEditingGroupName}
+                      onChangeEditingGroupAutoFetch={setEditingGroupAutoFetch}
                       onSaveGroupName={(targetGroup) => {
                         void saveGroupName(targetGroup);
                       }}

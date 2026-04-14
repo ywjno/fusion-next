@@ -180,4 +180,9 @@ export const ptMessages: PartialMessages = {
   "pwa.update.description": "Recarregue para usar a versao mais recente do Fusion.",
   "pwa.update.reload": "Recarregar",
   "pwa.update.title": "Atualizacao disponivel",
+  "settings.auto_fetch.label": "Obter automaticamente conteudo completo",
+  "settings.auto_fetch.inherit": "Herdar",
+  "settings.auto_fetch.inherit_from_group": "Herdar do grupo",
+  "settings.auto_fetch.enabled": "Ativado",
+  "settings.auto_fetch.disabled": "Desativado",
 };
