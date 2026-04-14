@@ -2,6 +2,7 @@ import { AlertCircle, ChevronDown, ChevronRight, Folder, Pause, Pencil, Plus, Tr
 import type { Dispatch, SetStateAction } from "react";
 import { FeedFavicon } from "@/components/feed/feed-favicon";
 import { Input } from "@/components/ui/input";
+import { AutoFetchField } from "@/components/feed/auto-fetch-field";
 import {
   Tooltip,
   TooltipContent,
@@ -19,11 +20,13 @@ interface FeedGroupCardProps {
   isCollapsed: boolean;
   isEditing: boolean;
   editingGroupName: string;
+  editingGroupAutoFetch: string;
   isMobile: boolean;
   mobileErrorTooltipFeedId: number | null;
   onToggleGroup: (groupId: number) => void;
   onStartEditingGroup: (group: Group) => void;
   onChangeEditingGroupName: (value: string) => void;
+  onChangeEditingGroupAutoFetch: (value: string) => void;
   onSaveGroupName: (group: Group) => void;
   onCancelEditingGroup: () => void;
   onOpenAddFeed: () => void;
@@ -47,11 +50,13 @@ export function FeedGroupCard({
   isCollapsed,
   isEditing,
   editingGroupName,
+  editingGroupAutoFetch,
   isMobile,
   mobileErrorTooltipFeedId,
   onToggleGroup,
   onStartEditingGroup,
   onChangeEditingGroupName,
+  onChangeEditingGroupAutoFetch,
   onSaveGroupName,
   onCancelEditingGroup,
   onOpenAddFeed,
@@ -89,9 +94,15 @@ export function FeedGroupCard({
                 if (e.key === "Enter") onSaveGroupName(group);
                 if (e.key === "Escape") onCancelEditingGroup();
               }}
-              className="h-7 w-40 px-2 text-sm"
+              className="h-7 w-32 px-2 text-sm sm:w-40"
               aria-label={t("group.add.placeholder")}
               autoFocus={!isMobile}
+            />
+            <AutoFetchField
+              value={editingGroupAutoFetch}
+              onChange={onChangeEditingGroupAutoFetch}
+              variant="compact"
+              className="h-7 w-[140px] px-2 text-xs sm:w-44"
             />
             <span
               className={cn(

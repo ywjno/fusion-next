@@ -180,4 +180,9 @@ export const ruMessages: PartialMessages = {
   "pwa.update.description": "Перезагрузите, чтобы использовать последнюю версию Fusion.",
   "pwa.update.reload": "Перезагрузить",
   "pwa.update.title": "Доступно обновление",
+  "settings.auto_fetch.label": "Автоматическая загрузка полного содержимого",
+  "settings.auto_fetch.inherit": "Наследовать",
+  "settings.auto_fetch.inherit_from_group": "Наследовать от группы",
+  "settings.auto_fetch.enabled": "Включено",
+  "settings.auto_fetch.disabled": "Отключено",
 };

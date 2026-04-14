@@ -180,4 +180,9 @@ export const zhMessages: PartialMessages = {
   "pwa.update.description": "重新加载以使用最新版本的 Fusion。",
   "pwa.update.reload": "重新加载",
   "pwa.update.title": "发现更新",
+  "settings.auto_fetch.label": "自动抓取全文",
+  "settings.auto_fetch.inherit": "继承",
+  "settings.auto_fetch.inherit_from_group": "从分组继承",
+  "settings.auto_fetch.enabled": "启用",
+  "settings.auto_fetch.disabled": "禁用",
 };

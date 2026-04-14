@@ -180,4 +180,9 @@ export const esMessages: PartialMessages = {
   "pwa.update.description": "Recarga para usar la ultima version de Fusion.",
   "pwa.update.reload": "Recargar",
   "pwa.update.title": "Actualizacion disponible",
+  "settings.auto_fetch.label": "Obtencion automatica de contenido completo",
+  "settings.auto_fetch.inherit": "Heredar",
+  "settings.auto_fetch.inherit_from_group": "Heredar del grupo",
+  "settings.auto_fetch.enabled": "Habilitado",
+  "settings.auto_fetch.disabled": "Deshabilitado",
 };

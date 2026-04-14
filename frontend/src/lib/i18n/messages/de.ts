@@ -180,4 +180,9 @@ export const deMessages: PartialMessages = {
   "pwa.update.description": "Neu laden, um die neueste Fusion-Version zu verwenden.",
   "pwa.update.reload": "Neu laden",
   "pwa.update.title": "Update verfugbar",
+  "settings.auto_fetch.label": "Vollstandigen Inhalt automatisch abrufen",
+  "settings.auto_fetch.inherit": "Erben",
+  "settings.auto_fetch.inherit_from_group": "Von Gruppe erben",
+  "settings.auto_fetch.enabled": "Aktiviert",
+  "settings.auto_fetch.disabled": "Deaktiviert",
 };

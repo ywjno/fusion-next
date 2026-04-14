@@ -180,4 +180,9 @@ export const svMessages: PartialMessages = {
   "pwa.update.description": "Ladda om for att anvanda den senaste versionen av Fusion.",
   "pwa.update.reload": "Ladda om",
   "pwa.update.title": "Uppdatering tillganglig",
+  "settings.auto_fetch.label": "Hamta automatiskt fullstandigt innehall",
+  "settings.auto_fetch.inherit": "Arv",
+  "settings.auto_fetch.inherit_from_group": "Arv fran grupp",
+  "settings.auto_fetch.enabled": "Aktiverad",
+  "settings.auto_fetch.disabled": "Inaktiverad",
 };
