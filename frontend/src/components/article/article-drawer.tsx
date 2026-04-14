@@ -33,6 +33,7 @@ import { processArticleContent } from "@/lib/content";
 import { getFaviconUrl } from "@/lib/api/favicon";
 import { FeedFavicon } from "@/components/feed/feed-favicon";
 import { toSafeExternalUrl } from "@/lib/safe-url";
+import { useAutoMarkRead } from "@/hooks/use-auto-mark-read";
 
 export function ArticleDrawer() {
   const { t } = useI18n();
@@ -157,6 +158,8 @@ export function ArticleDrawer() {
       },
       onOpenOriginal: handleOpenOriginal,
     });
+
+  useAutoMarkRead(article, canToggleRead);
 
   return (
     <Sheet open={selectedArticleId !== null} onOpenChange={handleOpenChange}>
