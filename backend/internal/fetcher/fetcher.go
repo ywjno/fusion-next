@@ -13,8 +13,9 @@ import (
 )
 
 type FetchOptions struct {
-	URL     string
-	Timeout time.Duration
+	URL       string
+	Timeout   time.Duration
+	UserAgent string
 }
 
 type FetchResult struct {
@@ -38,7 +39,11 @@ func FetchFullContent(options FetchOptions) *FetchResult {
 		return &FetchResult{Error: fmt.Errorf("failed to create request: %w", err)}
 	}
 
-	req.Header.Set("User-Agent", "Mozilla/5.0 (compatible; FusionRSS/1.0)")
+	ua := options.UserAgent
+	if ua == "" {
+		ua = "Mozilla/5.0 (compatible; FusionRSS/1.0)"
+	}
+	req.Header.Set("User-Agent", ua)
 
 	resp, err := client.Do(req)
 	if err != nil {

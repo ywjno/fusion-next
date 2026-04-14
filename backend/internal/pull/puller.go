@@ -10,6 +10,7 @@ import (
 
 	"github.com/0x2E/fusion/internal/config"
 	"github.com/0x2E/fusion/internal/fetcher"
+	"github.com/0x2E/fusion/internal/fetcherext"
 	"github.com/0x2E/fusion/internal/model"
 	"github.com/0x2E/fusion/internal/pullpolicy"
 	"github.com/0x2E/fusion/internal/store"
@@ -175,7 +176,7 @@ func (p *Puller) pullFeed(ctx context.Context, feed *model.Feed) {
 	for _, item := range result.Items {
 		content := item.Content
 		if fetcher.ShouldAutoFetch(feed, p.config.AutoFetchFullContent) && item.Link != "" {
-			result := fetcher.FetchFullContent(fetcher.FetchOptions{
+			result := fetcherext.FetchFullContentWithRandomUA(fetcher.FetchOptions{
 				URL:     item.Link,
 				Timeout: p.timeout,
 			})
