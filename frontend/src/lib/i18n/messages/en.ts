@@ -84,6 +84,8 @@ export const enMessages = {
   "group.add.title": "Add Group",
   "group.toast.createFailed": "Failed to create group",
   "group.toast.created": "Group created",
+  "group.toast.updated": "Group settings updated",
+  "group.toast.updateFailed": "Failed to update group settings",
   "feed.add.advanced": "Advanced Settings",
   "feed.add.button": "Add Feed",
   "feed.add.detectHint": "Click the icon to auto-detect feed URL from website",
@@ -181,7 +183,7 @@ export const enMessages = {
   "pwa.update.title": "Update available",
   "settings.auto_fetch.label": "Auto-fetch Full Content",
   "settings.auto_fetch.inherit": "Inherit",
-  "settings.auto_fetch.inherit_from_group": "Inherit from Group",
+  "settings.auto_fetch.inherit_from_group": "Inherit",
   "settings.auto_fetch.enabled": "Enabled",
   "settings.auto_fetch.disabled": "Disabled",
 } as const;

@@ -82,6 +82,7 @@ export interface LoginRequest {
 
 export interface CreateGroupRequest {
   name: string;
+  auto_fetch_full_content?: boolean | null;
 }
 
 export interface UpdateGroupRequest {

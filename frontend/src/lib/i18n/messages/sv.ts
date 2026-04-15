@@ -86,6 +86,8 @@ export const svMessages: PartialMessages = {
   "group.add.title": "Lagg till grupp",
   "group.toast.createFailed": "Kunde inte skapa grupp",
   "group.toast.created": "Grupp skapad",
+  "group.toast.updated": "Gruppinställningar uppdaterade",
+  "group.toast.updateFailed": "Kunde inte uppdatera gruppinställningar",
   "feed.add.advanced": "Avancerade installningar",
   "feed.add.button": "Lagg till flode",
   "feed.add.detectHint": "Klicka pa ikonen for att automatiskt hitta flodets URL",
@@ -182,7 +184,7 @@ export const svMessages: PartialMessages = {
   "pwa.update.title": "Uppdatering tillganglig",
   "settings.auto_fetch.label": "Hamta automatiskt fullstandigt innehall",
   "settings.auto_fetch.inherit": "Arv",
-  "settings.auto_fetch.inherit_from_group": "Arv fran grupp",
+  "settings.auto_fetch.inherit_from_group": "Arv",
   "settings.auto_fetch.enabled": "Aktiverad",
   "settings.auto_fetch.disabled": "Inaktiverad",
 };

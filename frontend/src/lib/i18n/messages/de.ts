@@ -86,6 +86,8 @@ export const deMessages: PartialMessages = {
   "group.add.title": "Gruppe hinzufugen",
   "group.toast.createFailed": "Gruppe konnte nicht erstellt werden",
   "group.toast.created": "Gruppe erstellt",
+  "group.toast.updated": "Gruppeneinstellungen aktualisiert",
+  "group.toast.updateFailed": "Gruppeneinstellungen konnten nicht aktualisiert werden",
   "feed.add.advanced": "Erweiterte Einstellungen",
   "feed.add.button": "Feed hinzufugen",
   "feed.add.detectHint": "Klicken, um Feed-URL automatisch zu erkennen",
@@ -182,7 +184,7 @@ export const deMessages: PartialMessages = {
   "pwa.update.title": "Update verfugbar",
   "settings.auto_fetch.label": "Vollstandigen Inhalt automatisch abrufen",
   "settings.auto_fetch.inherit": "Erben",
-  "settings.auto_fetch.inherit_from_group": "Von Gruppe erben",
+  "settings.auto_fetch.inherit_from_group": "Erben",
   "settings.auto_fetch.enabled": "Aktiviert",
   "settings.auto_fetch.disabled": "Deaktiviert",
 };

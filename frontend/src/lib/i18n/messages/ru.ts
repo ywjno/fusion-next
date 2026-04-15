@@ -86,6 +86,8 @@ export const ruMessages: PartialMessages = {
   "group.add.title": "Добавить группу",
   "group.toast.createFailed": "Не удалось создать группу",
   "group.toast.created": "Группа создана",
+  "group.toast.updated": "Настройки группы обновлены",
+  "group.toast.updateFailed": "Не удалось обновить настройки группы",
   "feed.add.advanced": "Расширенные настройки",
   "feed.add.button": "Добавить ленту",
   "feed.add.detectHint": "Нажмите на иконку для автоопределения URL ленты",
@@ -182,7 +184,7 @@ export const ruMessages: PartialMessages = {
   "pwa.update.title": "Доступно обновление",
   "settings.auto_fetch.label": "Автоматическая загрузка полного содержимого",
   "settings.auto_fetch.inherit": "Наследовать",
-  "settings.auto_fetch.inherit_from_group": "Наследовать от группы",
+  "settings.auto_fetch.inherit_from_group": "Наследовать",
   "settings.auto_fetch.enabled": "Включено",
   "settings.auto_fetch.disabled": "Отключено",
 };

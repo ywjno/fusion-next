@@ -10,7 +10,7 @@ import (
 )
 
 type groupRequest struct {
-	Name                 string `json:"name" binding:"required"`
+	Name                 string `json:"name"`
 	AutoFetchFullContent *bool  `json:"auto_fetch_full_content"`
 }
 
@@ -50,8 +50,12 @@ func (h *Handler) createGroup(c *gin.Context) {
 		badRequestError(c, "invalid request")
 		return
 	}
+	if req.Name == "" {
+		badRequestError(c, "name is required")
+		return
+	}
 
-	group, err := h.store.CreateGroup(req.Name)
+	group, err := h.store.CreateGroup(req.Name, req.AutoFetchFullContent)
 	if err != nil {
 		internalError(c, err, "create group")
 		return
@@ -74,7 +78,9 @@ func (h *Handler) updateGroup(c *gin.Context) {
 	}
 
 	params := store.UpdateGroupParams{}
-	params.Name = &req.Name
+	if req.Name != "" {
+		params.Name = &req.Name
+	}
 	if req.AutoFetchFullContent != nil {
 		params.AutoFetchFullContent = req.AutoFetchFullContent
 	}

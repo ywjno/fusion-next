@@ -43,7 +43,7 @@ import {
   useRefreshFeeds,
 } from "@/queries/feeds";
 import { useDeleteGroup, useGroups } from "@/queries/groups";
-import { useUpdateGroupExtended } from "@/queries/groups.ext";
+import { useSaveGroupExtended } from "@/queries/groups.ext";
 import { useUIStore } from "@/store";
 import { FeedGroupCard } from "@/components/feed/feed-group-card";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -58,7 +58,7 @@ function FeedsPage() {
   const { t } = useI18n();
   const { data: groups = [] } = useGroups();
   const { feeds, getFeedsByGroup, isLoading: isFeedsLoading } = useFeedLookup();
-  const updateGroupMutation = useUpdateGroupExtended();
+  const { save: saveGroup } = useSaveGroupExtended(t);
   const deleteGroupMutation = useDeleteGroup();
   const moveFeedsMutation = useMoveFeedsToGroup();
   const refreshFeedsMutation = useRefreshFeeds();
@@ -164,24 +164,8 @@ function FeedsPage() {
   };
 
   const saveGroupName = async (group: Group, autoFetch?: boolean | null) => {
-    const name = editingGroupName.trim();
     setEditingGroupId(null);
-
-    const shouldUpdateName = name && name !== group.name;
-    const shouldUpdateAutoFetch = autoFetch !== undefined && autoFetch !== group.auto_fetch_full_content;
-
-    if (!shouldUpdateName && !shouldUpdateAutoFetch) return;
-
-    try {
-      await updateGroupMutation.mutateAsync({
-        id: group.id,
-        ...(shouldUpdateName && { name }),
-        ...(shouldUpdateAutoFetch && { auto_fetch_full_content: autoFetch }),
-      });
-      toast.success(t("feeds.toast.renamed"));
-    } catch {
-      toast.error(t("feeds.toast.renameFailed"));
-    }
+    await saveGroup(group, editingGroupName, autoFetch);
   };
 
   const confirmDeleteGroup = async () => {
