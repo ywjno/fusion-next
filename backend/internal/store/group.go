@@ -52,10 +52,23 @@ func (s *Store) GetGroup(id int64) (*model.Group, error) {
 	return g, nil
 }
 
-func (s *Store) CreateGroup(name string) (*model.Group, error) {
-	result, err := s.db.Exec(`
-		INSERT INTO groups (name) VALUES (:name)
-	`, sql.Named("name", name))
+func (s *Store) CreateGroup(name string, autoFetch ...*bool) (*model.Group, error) {
+	var af *bool
+	if len(autoFetch) > 0 {
+		af = autoFetch[0]
+	}
+
+	var result sql.Result
+	var err error
+	if af != nil {
+		result, err = s.db.Exec(`
+			INSERT INTO groups (name, auto_fetch_full_content) VALUES (:name, :auto_fetch_full_content)
+		`, sql.Named("name", name), sql.Named("auto_fetch_full_content", boolToInt(*af)))
+	} else {
+		result, err = s.db.Exec(`
+			INSERT INTO groups (name) VALUES (:name)
+		`, sql.Named("name", name))
+	}
 	if err != nil {
 		return nil, err
 	}

@@ -89,11 +89,12 @@ func (s *Store) ListItems(params ListItemsParams) ([]*model.Item, error) {
 func (s *Store) GetItem(id int64) (*model.Item, error) {
 	i := &model.Item{}
 	var unread int
+	var fullContent sql.NullString
 	err := s.db.QueryRow(`
-		SELECT id, feed_id, guid, title, link, content, pub_date, unread, created_at
+		SELECT id, feed_id, guid, title, link, content, full_content, pub_date, unread, created_at
 		FROM items
 		WHERE id = :id
-	`, sql.Named("id", id)).Scan(&i.ID, &i.FeedID, &i.GUID, &i.Title, &i.Link, &i.Content, &i.PubDate, &unread, &i.CreatedAt)
+	`, sql.Named("id", id)).Scan(&i.ID, &i.FeedID, &i.GUID, &i.Title, &i.Link, &i.Content, &fullContent, &i.PubDate, &unread, &i.CreatedAt)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, fmt.Errorf("%w: item", ErrNotFound)
@@ -101,6 +102,7 @@ func (s *Store) GetItem(id int64) (*model.Item, error) {
 		return nil, fmt.Errorf("get item: %w", err)
 	}
 
+	i.FullContent = fullContent.String
 	i.Unread = intToBool(unread)
 	return i, nil
 }

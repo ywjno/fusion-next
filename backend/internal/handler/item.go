@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/0x2E/fusion/internal/fetcher"
+	"github.com/0x2E/fusion/internal/fetcherext"
 	"github.com/0x2E/fusion/internal/store"
 	"github.com/gin-gonic/gin"
 )
@@ -122,12 +123,13 @@ func (h *Handler) getItem(c *gin.Context) {
 	// Fetch full content if requested and not already available
 	if shouldFetch && item.Link != "" && item.FullContent == "" {
 		slog.Info("Fetching full content for item", "id", id, "link", item.Link)
-		result := fetcher.FetchFullContent(fetcher.FetchOptions{
+		result := fetcherext.FetchFullContentWithRandomUA(fetcher.FetchOptions{
 			URL: item.Link,
 		})
 
 		if result.Error == nil && result.Content != "" {
 			item.FullContent = result.Content
+			item.Content = result.Content
 			go func() {
 				if err := h.store.UpdateFullContent(item.ID, item.FullContent); err != nil {
 					slog.Error("Failed to save full content", "id", item.ID, "error", err)
@@ -136,6 +138,8 @@ func (h *Handler) getItem(c *gin.Context) {
 		} else if result.Error != nil {
 			slog.Warn("Failed to fetch full content, will use RSS content", "id", id, "error", result.Error)
 		}
+	} else if item.FullContent != "" {
+		item.Content = item.FullContent
 	}
 
 	dataResponse(c, item)

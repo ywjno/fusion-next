@@ -86,6 +86,8 @@ export const ptMessages: PartialMessages = {
   "group.add.title": "Adicionar grupo",
   "group.toast.createFailed": "Falha ao criar grupo",
   "group.toast.created": "Grupo criado",
+  "group.toast.updated": "Configurações do grupo atualizadas",
+  "group.toast.updateFailed": "Falha ao atualizar configurações do grupo",
   "feed.add.advanced": "Configuracoes avancadas",
   "feed.add.button": "Adicionar feed",
   "feed.add.detectHint": "Clique no icone para detectar automaticamente a URL do feed",
@@ -182,7 +184,7 @@ export const ptMessages: PartialMessages = {
   "pwa.update.title": "Atualizacao disponivel",
   "settings.auto_fetch.label": "Obter automaticamente conteudo completo",
   "settings.auto_fetch.inherit": "Herdar",
-  "settings.auto_fetch.inherit_from_group": "Herdar do grupo",
+  "settings.auto_fetch.inherit_from_group": "Herdar",
   "settings.auto_fetch.enabled": "Ativado",
   "settings.auto_fetch.disabled": "Desativado",
 };

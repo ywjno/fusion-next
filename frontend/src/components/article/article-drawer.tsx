@@ -76,17 +76,13 @@ export function ArticleDrawer() {
     : null;
 
   const shouldFetchArticle =
-    selectedArticleId !== null &&
-    selectedArticleId > 0 &&
-    (isStarredMode || storeArticle === null);
+    selectedArticleId !== null && selectedArticleId > 0;
   const { data: fetchedArticle } = useItem(
     selectedArticleId,
     shouldFetchArticle,
   );
 
-  const article: Item | null =
-    (isStarredMode ? fetchedArticle ?? storeArticle : storeArticle ?? fetchedArticle) ??
-    null;
+  const article: Item | null = fetchedArticle ?? storeArticle ?? null;
   const canToggleRead =
     article !== null && article.id > 0 && (!isStarredMode || fetchedArticle !== undefined);
   const feed = article ? getFeedById(article.feed_id) : null;
