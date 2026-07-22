@@ -25,7 +25,8 @@ export function AutoFetchField({
   const stringValue =
     value === null ? "null" : value === true ? "true" : value === false ? "false" : "null";
 
-  const handleChange = (v: string) => {
+  const handleChange = (v: string | null) => {
+    if (v === null) return;
     onChange(v === "null" ? null : v === "true" ? true : v === "false" ? false : undefined);
   };
 
