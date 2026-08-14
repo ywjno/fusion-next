@@ -1,7 +1,7 @@
 FROM alpine:3.21.0
 ARG TARGETOS=linux
 ARG TARGETARCH
-LABEL org.opencontainers.image.source="https://github.com/0x2E/fusion"
+LABEL org.opencontainers.image.source="https://github.com/ywjno/fusion-next"
 
 RUN addgroup -S fusion && adduser -S -D -H -h /fusion -G fusion fusion && \
     mkdir -p /data && chown -R fusion:fusion /data
