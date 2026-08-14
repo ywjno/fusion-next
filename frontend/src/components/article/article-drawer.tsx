@@ -30,6 +30,7 @@ import { processArticleContent } from "@/lib/content";
 import { getFaviconUrl } from "@/lib/api/favicon";
 import { FeedFavicon } from "@/components/feed/feed-favicon";
 import { toSafeExternalUrl } from "@/lib/safe-url";
+import { useAutoMarkRead } from "@/hooks/use-auto-mark-read";
 
 export function ArticleDrawer() {
   const { t } = useI18n();
@@ -62,18 +63,15 @@ export function ArticleDrawer() {
     : null;
 
   const shouldFetchArticle =
-    selectedArticleId !== null &&
-    selectedArticleId > 0 &&
-    (isStarredMode || storeArticle === null);
+    selectedArticleId !== null && selectedArticleId > 0;
   const { data: fetchedArticle } = useItem(
     selectedArticleId,
     shouldFetchArticle,
   );
 
-  const article: Item | null =
-    (isStarredMode ? fetchedArticle ?? storeArticle : storeArticle ?? fetchedArticle) ??
-    null;
-  const canToggleRead = article !== null && article.id > 0;
+  const article: Item | null = fetchedArticle ?? storeArticle ?? null;
+  const canToggleRead =
+    article !== null && article.id > 0 && (!isStarredMode || fetchedArticle !== undefined);
   const feed = article ? getFeedById(article.feed_id) : null;
   const bookmark = article ? getBookmarkByItemId(article.id) : null;
   const starred = article ? isItemStarred(article.id) : false;
@@ -143,6 +141,8 @@ export function ArticleDrawer() {
       },
       onOpenOriginal: handleOpenOriginal,
     });
+
+  useAutoMarkRead(article, canToggleRead);
 
   return (
     <Sheet open={selectedArticleId !== null} onOpenChange={handleOpenChange}>

@@ -73,7 +73,7 @@ function AppearanceContent() {
             {t("settings.language.description")}
           </p>
         </div>
-        <Select value={locale} onValueChange={(v) => { if (v) setLocale(v); }}>
+        <Select value={locale} onValueChange={(v) => { if (v) setLocale(v); }} items={localeLabels}>
           <SelectTrigger className="w-auto gap-2 border-border">
             <SelectValue />
           </SelectTrigger>
@@ -128,7 +128,15 @@ function AppearanceContent() {
             {t("settings.theme.description")}
           </p>
         </div>
-        <Select value={theme} onValueChange={(v) => { if (v) setTheme(v); }}>
+        <Select
+          value={theme}
+          onValueChange={(v) => { if (v) setTheme(v); }}
+          items={{
+            light: t("settings.theme.light"),
+            dark: t("settings.theme.dark"),
+            system: t("settings.theme.system"),
+          }}
+        >
           <SelectTrigger className="w-auto gap-2 border-border">
             <SelectValue />
           </SelectTrigger>

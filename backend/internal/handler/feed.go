@@ -17,20 +17,22 @@ import (
 )
 
 type createFeedRequest struct {
-	GroupID int64  `json:"group_id" binding:"required"`
-	Name    string `json:"name" binding:"required"`
-	Link    string `json:"link" binding:"required"`
-	SiteURL string `json:"site_url"`
-	Proxy   string `json:"proxy"`
+	GroupID              int64  `json:"group_id" binding:"required"`
+	Name                 string `json:"name" binding:"required"`
+	Link                 string `json:"link" binding:"required"`
+	SiteURL              string `json:"site_url"`
+	Proxy                string `json:"proxy"`
+	AutoFetchFullContent bool   `json:"auto_fetch_full_content"`
 }
 
 type updateFeedRequest struct {
-	GroupID   *int64  `json:"group_id"`
-	Name      *string `json:"name"`
-	Link      *string `json:"link"`
-	SiteURL   *string `json:"site_url"`
-	Suspended *bool   `json:"suspended"`
-	Proxy     *string `json:"proxy"` // Empty string clears proxy
+	GroupID              *int64  `json:"group_id"`
+	Name                 *string `json:"name"`
+	Link                 *string `json:"link"`
+	SiteURL              *string `json:"site_url"`
+	Suspended            *bool   `json:"suspended"`
+	AutoFetchFullContent *bool   `json:"auto_fetch_full_content"`
+	Proxy                *string `json:"proxy"` // Empty string clears proxy
 }
 
 type validateFeedRequest struct {
@@ -100,7 +102,7 @@ func (h *Handler) createFeed(c *gin.Context) {
 		return
 	}
 
-	feed, err := h.store.CreateFeed(req.GroupID, req.Name, req.Link, req.SiteURL, req.Proxy)
+	feed, err := h.store.CreateFeed(req.GroupID, req.Name, req.Link, req.SiteURL, req.Proxy, req.AutoFetchFullContent)
 	if err != nil {
 		internalError(c, err, "create feed")
 		return
@@ -154,6 +156,9 @@ func (h *Handler) updateFeed(c *gin.Context) {
 	}
 	if req.Proxy != nil {
 		params.Proxy = req.Proxy
+	}
+	if req.AutoFetchFullContent != nil {
+		params.AutoFetchFullContent = req.AutoFetchFullContent
 	}
 
 	if err := h.store.UpdateFeed(id, params); err != nil {

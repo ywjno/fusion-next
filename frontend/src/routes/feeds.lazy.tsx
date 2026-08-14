@@ -42,7 +42,8 @@ import {
   useMoveFeedsToGroup,
   useRefreshFeeds,
 } from "@/queries/feeds";
-import { useDeleteGroup, useGroups, useUpdateGroup } from "@/queries/groups";
+import { useDeleteGroup, useGroups } from "@/queries/groups";
+import { useSaveGroupExtended } from "@/queries/groups.ext";
 import { useUIStore } from "@/store";
 import { FeedGroupCard } from "@/components/feed/feed-group-card";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -57,7 +58,7 @@ function FeedsPage() {
   const { t } = useI18n();
   const { data: groups = [] } = useGroups();
   const { feeds, getFeedsByGroup, isLoading: isFeedsLoading } = useFeedLookup();
-  const updateGroupMutation = useUpdateGroup();
+  const { save: saveGroup } = useSaveGroupExtended(t);
   const deleteGroupMutation = useDeleteGroup();
   const moveFeedsMutation = useMoveFeedsToGroup();
   const refreshFeedsMutation = useRefreshFeeds();
@@ -162,17 +163,9 @@ function FeedsPage() {
     setEditingGroupName(group.name);
   };
 
-  const saveGroupName = async (group: Group) => {
-    const name = editingGroupName.trim();
+  const saveGroupName = async (group: Group, autoFetch?: boolean | null) => {
     setEditingGroupId(null);
-    if (!name || name === group.name) return;
-
-    try {
-      await updateGroupMutation.mutateAsync({ id: group.id, name });
-      toast.success(t("feeds.toast.renamed"));
-    } catch {
-      toast.error(t("feeds.toast.renameFailed"));
-    }
+    await saveGroup(group, editingGroupName, autoFetch);
   };
 
   const confirmDeleteGroup = async () => {
@@ -361,8 +354,8 @@ function FeedsPage() {
                       onToggleGroup={toggleGroup}
                       onStartEditingGroup={startEditingGroup}
                       onChangeEditingGroupName={setEditingGroupName}
-                      onSaveGroupName={(targetGroup) => {
-                        void saveGroupName(targetGroup);
+                      onSaveGroupName={(targetGroup, autoFetch) => {
+                        void saveGroupName(targetGroup, autoFetch);
                       }}
                       onCancelEditingGroup={() => setEditingGroupId(null)}
                       onOpenAddFeed={() => setAddFeedOpen(true)}
