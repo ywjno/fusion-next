@@ -32,6 +32,7 @@ import { useUIStore } from "@/store";
 import { useGroups } from "@/queries/groups";
 import { useUpdateFeed, useDeleteFeed } from "@/queries/feeds";
 import type { UpdateFeedRequest } from "@/lib/api";
+import { AutoFetchField } from "@/components/feed/auto-fetch-field";
 import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -49,6 +50,7 @@ export function EditFeedDialog() {
   const [groupId, setGroupId] = useState<string>("");
   const [proxy, setProxy] = useState("");
   const [suspended, setSuspended] = useState(false);
+  const [autoFetchValue, setAutoFetchValue] = useState<boolean | null | undefined>(undefined);
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -69,6 +71,7 @@ export function EditFeedDialog() {
       setGroupId(editingFeed.group_id.toString());
       setProxy(editingFeed.proxy ?? "");
       setSuspended(editingFeed.suspended);
+      setAutoFetchValue(undefined);
       setIsAdvancedOpen(!!editingFeed.proxy);
       setIsMobileErrorTooltipOpen(false);
     }
@@ -80,6 +83,7 @@ export function EditFeedDialog() {
     setGroupId("");
     setProxy("");
     setSuspended(false);
+    setAutoFetchValue(undefined);
     setIsAdvancedOpen(false);
     setIsDeleteOpen(false);
   };
@@ -127,6 +131,11 @@ export function EditFeedDialog() {
       const newProxy = proxy.trim() || undefined;
       if (newProxy !== editingFeed.proxy) {
         request.proxy = newProxy;
+      }
+
+      const newAutoFetch = autoFetchValue !== undefined ? autoFetchValue : editingFeed.auto_fetch_full_content;
+      if (newAutoFetch !== editingFeed.auto_fetch_full_content) {
+        request.auto_fetch_full_content = newAutoFetch;
       }
 
       if (Object.keys(request).length === 0) {
@@ -296,6 +305,11 @@ export function EditFeedDialog() {
                 onCheckedChange={setSuspended}
               />
             </div>
+
+            <AutoFetchField
+              value={autoFetchValue !== undefined ? autoFetchValue : editingFeed?.auto_fetch_full_content}
+              onChange={setAutoFetchValue}
+            />
 
             {/* Advanced Section */}
             <Collapsible open={isAdvancedOpen} onOpenChange={setIsAdvancedOpen}>

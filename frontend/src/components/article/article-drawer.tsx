@@ -46,12 +46,11 @@ export function ArticleDrawer() {
   } = useUrlState();
   const { getFeedById } = useFeedLookup();
 
-  const { articles, isStarredMode, isItemStarred, getBookmarkByItemId } =
-    useArticleList({
-      feedId: selectedFeedId,
-      groupId: selectedGroupId,
-      articleFilter,
-    });
+  const { articles, isItemStarred, getBookmarkByItemId } = useArticleList({
+    feedId: selectedFeedId,
+    groupId: selectedGroupId,
+    articleFilter,
+  });
 
   const markRead = useMarkItemsRead();
   const markUnread = useMarkItemsUnread();
@@ -70,18 +69,16 @@ export function ArticleDrawer() {
     ? (articles.find((i) => i.id === selectedArticleId) ?? null)
     : null;
 
-  const shouldFetchArticle =
-    selectedArticleId !== null &&
-    selectedArticleId > 0 &&
-    (isStarredMode || storeArticle === null);
+  // Fork behavior: always fetch the article detail on open. The backend
+  // fetches full content on demand in the detail handler, and most feeds
+  // leave auto-fetch off at the feed level, so skipping the detail request
+  // (the upstream optimization) leaves readers with summary-only content.
   const { data: fetchedArticle } = useItem(
     selectedArticleId,
-    shouldFetchArticle,
+    selectedArticleId !== null && selectedArticleId > 0,
   );
 
-  const article: Item | null =
-    (isStarredMode ? fetchedArticle ?? storeArticle : storeArticle ?? fetchedArticle) ??
-    null;
+  const article: Item | null = fetchedArticle ?? storeArticle ?? null;
   // Read state comes from the in-hand row (list/bookmark cache), not the
   // detail refetch: in starred mode the fetched detail can disagree with the
   // row, and the header toggle, the auto-mark timer, and the veto must all

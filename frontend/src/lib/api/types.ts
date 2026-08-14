@@ -2,6 +2,7 @@
 export interface Group {
   id: number;
   name: string;
+  auto_fetch_full_content?: boolean | null;
   created_at: number;
   updated_at: number;
 }
@@ -14,6 +15,7 @@ export interface Feed {
   site_url?: string;
   suspended: boolean;
   proxy?: string;
+  auto_fetch_full_content?: boolean | null;
   created_at: number;
   updated_at: number;
   fetch_state: FeedFetchState;
@@ -106,10 +108,12 @@ export interface LoginRequest {
 
 export interface CreateGroupRequest {
   name: string;
+  auto_fetch_full_content?: boolean | null;
 }
 
 export interface UpdateGroupRequest {
-  name: string;
+  name?: string;
+  auto_fetch_full_content?: boolean | null;
 }
 
 export interface CreateFeedRequest {
@@ -127,6 +131,7 @@ export interface UpdateFeedRequest {
   site_url?: string;
   suspended?: boolean;
   proxy?: string;
+  auto_fetch_full_content?: boolean | null;
 }
 
 export interface ValidateFeedRequest {

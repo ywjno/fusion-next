@@ -95,6 +95,8 @@ export const frMessages: PartialMessages = {
   "group.add.title": "Ajouter un groupe",
   "group.toast.createFailed": "Échec de création du groupe",
   "group.toast.created": "Groupe créé",
+  "group.toast.updated": "Paramètres du groupe mis à jour",
+  "group.toast.updateFailed": "Échec de mise à jour des paramètres du groupe",
   "feed.add.advanced": "Paramètres avancés",
   "feed.add.button": "Ajouter un flux",
   "feed.add.detectHint": "Cliquez sur l'icône pour détecter automatiquement l'URL du flux",
@@ -191,4 +193,9 @@ export const frMessages: PartialMessages = {
   "pwa.update.description": "Rechargez pour utiliser la dernière version de Fusion.",
   "pwa.update.reload": "Recharger",
   "pwa.update.title": "Mise à jour disponible",
+  "settings.auto_fetch.label": "Récupération automatique du contenu complet",
+  "settings.auto_fetch.inherit": "Hériter",
+  "settings.auto_fetch.inherit_from_group": "Hériter",
+  "settings.auto_fetch.enabled": "Activé",
+  "settings.auto_fetch.disabled": "Désactivé",
 };
