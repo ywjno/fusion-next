@@ -21,7 +21,7 @@
 <details>
   <summary><strong>Option 1 (Recommended): Run pre-built binary from Releases</strong></summary>
 
-Download the binary for your platform from [Releases](https://github.com/0x2E/fusion/releases), then run:
+Download the binary for your platform from [Releases](https://github.com/ywjno/fusion-next/releases), then run:
 
 ```shell
 chmod +x fusion
@@ -49,7 +49,7 @@ Open `http://localhost:8080`.
 docker run -it -d -p 8080:8080 \
   -v $(pwd)/fusion:/data \
   -e FUSION_PASSWORD="fusion" \
-  ghcr.io/0x2e/fusion:latest
+  ghcr.io/ywjno/fusion-next:latest
 ```
 
 Open `http://localhost:8080`.
@@ -60,7 +60,7 @@ Docker Compose example:
 version: "3"
 services:
   fusion:
-    image: ghcr.io/0x2e/fusion:latest
+    image: ghcr.io/ywjno/fusion-next:latest
     ports:
       - "127.0.0.1:8080:8080"
     environment:
@@ -69,6 +69,7 @@ services:
     volumes:
       - ./data:/data
 ```
+
 </details>
 
 <details>
