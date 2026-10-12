@@ -146,6 +146,9 @@ func (h *Handler) SetupRouter() *gin.Engine {
 
 			auth.GET("/settings", h.getSettings)
 			auth.PATCH("/settings", h.updateSettings)
+
+			auth.POST("/fullContent", h.backfillFullContent)
+			auth.GET("/fullContent", h.backfillFullContentStatus)
 		}
 	}
 

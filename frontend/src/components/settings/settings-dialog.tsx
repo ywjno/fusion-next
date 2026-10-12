@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { useTheme } from "next-themes";
 import { toast } from "sonner";
-import { Bug, Download, Info, Keyboard, Settings as SettingsIcon } from "lucide-react";
+import { Bug, Download, FileText, Info, Keyboard, Settings as SettingsIcon } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -22,6 +22,7 @@ import { usePWAInstall } from "@/hooks/use-pwa-install";
 import { localeLabels, useI18n } from "@/lib/i18n";
 import { ensureLocaleMessages } from "@/lib/i18n/messages";
 import { APIError, settingsAPI, type UpdateSettingsRequest } from "@/lib/api";
+import { ContentManagement } from "@/components/settings/settings-content-management";
 import { waitForSettingsSeed } from "@/lib/settings-sync";
 import type { AppLocale } from "@/store/preferences";
 import { cn } from "@/lib/utils";
@@ -34,7 +35,7 @@ function GithubIcon({ className }: { className?: string }) {
   );
 }
 
-type SettingsTab = "general" | "about";
+type SettingsTab = "general" | "content" | "about";
 
 // Module scope so the counters survive unmounting a tab or the dialog
 // itself: a late-failing save from an old mount must not revert a newer
@@ -432,6 +433,7 @@ export function SettingsDialog() {
 
   const tabTitles: Record<SettingsTab, string> = {
     general: t("settings.tab.general"),
+    content: t("settings.tab.content"),
     about: t("settings.tab.about"),
   };
 
@@ -451,6 +453,12 @@ export function SettingsDialog() {
               onClick={() => setActiveTab("general")}
             />
             <NavItem
+              icon={<FileText className="h-4 w-4" />}
+              label={t("settings.tab.content")}
+              active={activeTab === "content"}
+              onClick={() => setActiveTab("content")}
+            />
+            <NavItem
               icon={<Info className="h-4 w-4" />}
               label={t("settings.tab.about")}
               active={activeTab === "about"}
@@ -467,6 +475,7 @@ export function SettingsDialog() {
 
           <div className="flex-1 overflow-y-auto">
             {activeTab === "general" && <GeneralContent />}
+            {activeTab === "content" && <ContentManagement />}
             {activeTab === "about" && <AboutContent />}
           </div>
         </div>
